@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Adjective Declension Practice</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #eef2f7; /* Light blue-grey background */
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 650px; /* Slightly wider for potentially longer sentences */
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1em;
+        }
+         h1 {
+             margin-top: 0;
+         }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+         button.secondary:hover {
+             background-color: #5a6268;
+         }
+
+        #mode-selection button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        #quiz-area, #results-area {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #prompt {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            white-space: pre-line; /* Respect newlines in prompt */
+            background-color: #f8f9fa; /* Light background for prompt */
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: left; /* Align prompt text left */
+            border: 1px solid #eee;
+        }
+         #prompt .placeholder {
+             font-weight: bold;
+             color: var(--primary-color);
+             background-color: #e7f3ff;
+             padding: 0 3px;
+             border-radius: 3px;
+         }
+         #prompt .hint {
+             display: block; /* Put hint on new line */
+             font-style: italic;
+             color: var(--secondary-color);
+             font-size: 0.9em;
+             margin-top: 8px;
+         }
+
+
+        #user-answer {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 1.2em; /* Prevent layout shift */
+            padding: 10px;
+            border-radius: var(--border-radius);
+        }
+
+        .correct {
+            color: var(--success-color);
+            background-color: #d4edda; /* Light green background */
+            border: 1px solid #c3e6cb;
+        }
+
+        .incorrect {
+            color: var(--danger-color);
+            background-color: #f8d7da; /* Light red background */
+            border: 1px solid #f5c6cb;
+        }
+
+        #results-area ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 15px;
+            max-height: 350px; /* Allow scrolling for many errors */
+            overflow-y: auto;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        #results-area li {
+            background-color: var(--light-color);
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            line-height: 1.5;
+        }
+         #results-area li .prompt-review {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+            font-size: 0.95em;
+         }
+         #results-area li span { /* General span styling */
+             font-weight: normal;
+         }
+         #results-area li .user-ans {
+             color: var(--danger-color);
+             font-style: italic;
+             font-weight: bold;
+         }
+         #results-area li .correct-ans {
+              color: var(--success-color);
+              font-weight: bold;
+         }
+
+        #question-counter {
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+         /* Basic responsiveness */
+         @media (max-width: 600px) {
+             body {
+                 padding: 10px;
+             }
+             #app {
+                 padding: 20px;
+                 max-width: 95%;
+             }
+             button {
+                 padding: 10px 15px;
+                 font-size: 0.95rem;
+             }
+              #prompt {
+                 padding: 10px;
+                 font-size: 1em;
+             }
+             #user-answer {
+                 font-size: 0.95rem;
+             }
+         }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>German Adjective Declension</h1>
+
+        <div id="mode-selection">
+            <h2>Choose Declension Type:</h2>
+            <button onclick="startQuiz('strong')">Strong Declension</button>
+            <button onclick="startQuiz('weak')">Weak Declension</button>
+            <button onclick="startQuiz('mixed')">Mixed Declension</button>
+            <p style="font-size: 0.8em; color: var(--secondary-color);">Each quiz round selects 20 questions randomly.</p>
+        </div>
+
+        <div id="quiz-area" style="display: none;">
+            <h2 id="quiz-title">Quiz</h2>
+            <p id="question-counter"></p>
+            <div id="prompt"></div> <input type="text" id="user-answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type declined adjective...">
+            <button id="submit-answer" onclick="checkAnswer()">Submit</button>
+            <div id="feedback"></div>
+            <button class="secondary" onclick="resetQuiz()">End Quiz & Change Mode</button>
+        </div>
+
+        <div id="results-area" style="display: none;">
+            <h2>Quiz Finished</h2>
+            <p id="final-score"></p>
+            <p id="percentage"></p>
+            <div id="mistakes-container">
+                 <h3>Review Your Mistakes:</h3>
+                 <ul id="mistakes-list"></ul>
+            </div>
+             <p id="no-mistakes" style="display: none; color: var(--success-color); font-weight: bold;">Congratulations! You made no mistakes.</p>
+            <button onclick="resetQuiz()">Practice Again</button>
+        </div>
+    </div>
+
+<script>
+    // --- Question Data ---
+    // Aiming for ~50 examples per type with varied gender/case combinations.
+    const allQuestions = [
+        // ========================================
+        // Strong Declension (~50 examples)
+        // ========================================
+        // --- Masculine Singular ---
+        { type: 'strong', sentence: '___ Wind weht heute. (m, Nom)', adjectiveBase: 'kalt', correctAnswer: 'Kalter' },
+        { type: 'strong', sentence: 'Gestern gab es ___ Regen. (m, Akk)', adjectiveBase: 'stark', correctAnswer: 'starken' },
+        { type: 'strong', sentence: 'Er antwortet mit ___ Nachdruck. (m, Dat)', adjectiveBase: 'groß', correctAnswer: 'großem' },
+        { type: 'strong', sentence: 'Wegen ___ Nebels sieht man nichts. (m, Gen)', adjectiveBase: 'dicht', correctAnswer: 'dichten' },
+        { type: 'strong', sentence: '___ Kaffee schmeckt gut. (m, Nom)', adjectiveBase: 'heiß', correctAnswer: 'Heißer' },
+        { type: 'strong', sentence: 'Ich trinke ___ Saft. (m, Akk)', adjectiveBase: 'süß', correctAnswer: 'süßen' },
+        { type: 'strong', sentence: 'Nach ___ Streit waren sie müde. (m, Dat)', adjectiveBase: 'lang', correctAnswer: 'langem' },
+        { type: 'strong', sentence: 'Der Geruch ___ Käses ist intensiv. (m, Gen)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'strong', sentence: 'Ein ___ Mann stand da. (m, Nom)', adjectiveBase: 'alter', correctAnswer: 'alter' }, // Technically not strong, but often practiced here
+        { type: 'strong', sentence: 'Sie sucht ___ Rat. (m, Akk)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'strong', sentence: 'Aus ___ Grund kann er nicht kommen. (m, Dat)', adjectiveBase: 'wichtig', correctAnswer: 'wichtigem' },
+        { type: 'strong', sentence: 'Der Klang ___ Donners war laut. (m, Gen)', adjectiveBase: 'fern', correctAnswer: 'fernen' },
+        // --- Feminine Singular ---
+        { type: 'strong', sentence: '___ Luft tut gut. (f, Nom)', adjectiveBase: 'frisch', correctAnswer: 'Frische' },
+        { type: 'strong', sentence: 'Sie isst ___ Suppe. (f, Akk)', adjectiveBase: 'heiß', correctAnswer: 'heiße' },
+        { type: 'strong', sentence: 'Er kam mit ___ Verspätung. (f, Dat)', adjectiveBase: 'groß', correctAnswer: 'großer' },
+        { type: 'strong', sentence: 'Trotz ___ Kälte ging sie spazieren. (f, Gen)', adjectiveBase: 'eisig', correctAnswer: 'eisiger' },
+        { type: 'strong', sentence: '___ Milch ist im Kühlschrank. (f, Nom)', adjectiveBase: 'kalt', correctAnswer: 'Kalte' },
+        { type: 'strong', sentence: 'Ich brauche ___ Butter. (f, Akk)', adjectiveBase: 'frisch', correctAnswer: 'frische' },
+        { type: 'strong', sentence: 'Sie half mit ___ Freude. (f, Dat)', adjectiveBase: 'sichtlich', correctAnswer: 'sichtlicher' },
+        { type: 'strong', sentence: 'Innerhalb ___ Zeit muss es fertig sein. (f, Gen)', adjectiveBase: 'kurz', correctAnswer: 'kurzer' },
+        { type: 'strong', sentence: '___ Ruhe herrscht im Wald. (f, Nom)', adjectiveBase: 'tief', correctAnswer: 'Tiefe' },
+        { type: 'strong', sentence: 'Er trinkt ___ Limonade. (f, Akk)', adjectiveBase: 'süß', correctAnswer: 'süße' },
+        { type: 'strong', sentence: 'Nach ___ Pause geht es weiter. (f, Dat)', adjectiveBase: 'kurz', correctAnswer: 'kurzer' },
+        { type: 'strong', sentence: 'Anstelle ___ Hilfe kam Kritik. (f, Gen)', adjectiveBase: 'schnell', correctAnswer: 'schneller' },
+        // --- Neuter Singular ---
+        { type: 'strong', sentence: '___ Wasser ist klar. (n, Nom)', adjectiveBase: 'kalt', correctAnswer: 'Kaltes' },
+        { type: 'strong', sentence: 'Wir essen ___ Brot. (n, Akk)', adjectiveBase: 'frisch', correctAnswer: 'frisches' },
+        { type: 'strong', sentence: 'Mit ___ Gepäck reist es sich leichter. (n, Dat)', adjectiveBase: 'klein', correctAnswer: 'kleinem' },
+        { type: 'strong', sentence: 'Das Ergebnis ___ Spiels war knapp. (n, Gen)', adjectiveBase: 'lang', correctAnswer: 'langen' },
+        { type: 'strong', sentence: '___ Licht brennt im Zimmer. (n, Nom)', adjectiveBase: 'hell', correctAnswer: 'Helles' },
+        { type: 'strong', sentence: 'Sie trinkt ___ Bier. (n, Akk)', adjectiveBase: 'kühl', correctAnswer: 'kühles' },
+        { type: 'strong', sentence: 'Er kam mit ___ Gepäck an. (n, Dat)', adjectiveBase: 'schwer', correctAnswer: 'schwerem' },
+        { type: 'strong', sentence: 'Während ___ Essens wird nicht gesprochen. (n, Gen)', adjectiveBase: 'gemeinsam', correctAnswer: 'gemeinsamen' },
+        { type: 'strong', sentence: '___ Gold glänzt schön. (n, Nom)', adjectiveBase: 'echt', correctAnswer: 'Echtes' },
+        { type: 'strong', sentence: 'Er liest ___ Buch. (n, Akk)', adjectiveBase: 'spannend', correctAnswer: 'spannendes' },
+        { type: 'strong', sentence: 'Sie spielt mit ___ Holzauto. (n, Dat)', adjectiveBase: 'alt', correctAnswer: 'altem' },
+        { type: 'strong', sentence: 'Das Dach ___ Hauses ist rot. (n, Gen)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        // --- Plural ---
+        { type: 'strong', sentence: '___ Leute warten draußen. (pl, Nom)', adjectiveBase: 'viel', correctAnswer: 'Viele' },
+        { type: 'strong', sentence: 'Ich sehe ___ Vögel am Himmel. (pl, Akk)', adjectiveBase: 'schön', correctAnswer: 'schöne' },
+        { type: 'strong', sentence: 'Wir helfen ___ Menschen in Not. (pl, Dat)', adjectiveBase: 'arm', correctAnswer: 'armen' },
+        { type: 'strong', sentence: 'Die Meinung ___ Experten ist wichtig. (pl, Gen)', adjectiveBase: 'anerkannt', correctAnswer: 'anerkannter' },
+        { type: 'strong', sentence: '___ Äpfel sind reif. (pl, Nom)', adjectiveBase: 'rot', correctAnswer: 'Rote' },
+        { type: 'strong', sentence: 'Er kauft ___ Blumen. (pl, Akk)', adjectiveBase: 'frisch', correctAnswer: 'frische' },
+        { type: 'strong', sentence: 'Sie spricht mit ___ Kindern. (pl, Dat)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        { type: 'strong', sentence: 'Die Blätter ___ Bäume fallen herab. (pl, Gen)', adjectiveBase: 'alt', correctAnswer: 'alter' },
+        { type: 'strong', sentence: '___ Probleme müssen gelöst werden. (pl, Nom)', adjectiveBase: 'drängend', correctAnswer: 'Drängende' },
+        { type: 'strong', sentence: 'Wir besuchen ___ Städte. (pl, Akk)', adjectiveBase: 'interessant', correctAnswer: 'interessante' },
+        { type: 'strong', sentence: 'Das Fest dient ___ Zwecken. (pl, Dat)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'strong', sentence: 'Die Werke ___ Künstler werden ausgestellt. (pl, Gen)', adjectiveBase: 'jung', correctAnswer: 'junger' },
+        { type: 'strong', sentence: '___ Schuhe passen gut. (pl, Nom)', adjectiveBase: 'neu', correctAnswer: 'Neue' },
+        { type: 'strong', sentence: 'Sie trägt ___ Handschuhe. (pl, Akk)', adjectiveBase: 'warm', correctAnswer: 'warme' },
+        { type: 'strong', sentence: 'Mit ___ Worten tröstete er sie. (pl, Dat)', adjectiveBase: 'sanft', correctAnswer: 'sanften' },
+        { type: 'strong', sentence: 'Die Geschichten ___ Reisenden waren spannend. (pl, Gen)', adjectiveBase: 'weitgereist', correctAnswer: 'weitgereister' },
+
+        // ========================================
+        // Weak Declension (~50 examples)
+        // ========================================
+        // --- Masculine Singular ---
+        { type: 'weak', sentence: 'Der ___ Mann schläft. (m, Nom)', adjectiveBase: 'alt', correctAnswer: 'alte' },
+        { type: 'weak', sentence: 'Siehst du den ___ Baum? (m, Akk)', adjectiveBase: 'hoch', correctAnswer: 'hohen' },
+        { type: 'weak', sentence: 'Ich helfe dem ___ Nachbarn. (m, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'weak', sentence: 'Der Hut des ___ Herrn ist schwarz. (m, Gen)', adjectiveBase: 'elegant', correctAnswer: 'eleganten' },
+        { type: 'weak', sentence: 'Jeder ___ Tag ist ein Geschenk. (m, Nom)', adjectiveBase: 'neu', correctAnswer: 'neue' },
+        { type: 'weak', sentence: 'Welchen ___ Film möchtest du sehen? (m, Akk)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'weak', sentence: 'Er spricht mit demselben ___ Akzent. (m, Dat)', adjectiveBase: 'leicht', correctAnswer: 'leichten' },
+        { type: 'weak', sentence: 'Das Büro dieses ___ Anwalts ist im Zentrum. (m, Gen)', adjectiveBase: 'bekannt', correctAnswer: 'bekannten' },
+        { type: 'weak', sentence: 'Der ___ Kaffee ist heiß. (m, Nom)', adjectiveBase: 'schwarz', correctAnswer: 'schwarze' },
+        { type: 'weak', sentence: 'Er trinkt den ___ Tee. (m, Akk)', adjectiveBase: 'grün', correctAnswer: 'grünen' },
+        { type: 'weak', sentence: 'Sie folgt dem ___ Wegweiser. (m, Dat)', adjectiveBase: 'nächst', correctAnswer: 'nächsten' },
+        { type: 'weak', sentence: 'Der Motor des ___ Wagens läuft gut. (m, Gen)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        // --- Feminine Singular ---
+        { type: 'weak', sentence: 'Die ___ Katze miaut. (f, Nom)', adjectiveBase: 'klein', correctAnswer: 'kleine' },
+        { type: 'weak', sentence: 'Er liest die ___ Zeitung. (f, Akk)', adjectiveBase: 'lokal', correctAnswer: 'lokale' },
+        { type: 'weak', sentence: 'Wir danken der ___ Ärztin. (f, Dat)', adjectiveBase: 'freundlich', correctAnswer: 'freundlichen' },
+        { type: 'weak', sentence: 'Die Tasche jener ___ Dame ist teuer. (f, Gen)', adjectiveBase: 'jung', correctAnswer: 'jungen' },
+        { type: 'weak', sentence: 'Diese ___ Blume duftet stark. (f, Nom)', adjectiveBase: 'rot', correctAnswer: 'rote' },
+        { type: 'weak', sentence: 'Ich kaufe dieselbe ___ Jacke. (f, Akk)', adjectiveBase: 'blau', correctAnswer: 'blaue' },
+        { type: 'weak', sentence: 'Sie spielt mit der ___ Puppe. (f, Dat)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'weak', sentence: 'Die Tür welcher ___ Wohnung ist offen? (f, Gen)', adjectiveBase: 'leer', correctAnswer: 'leeren' },
+        { type: 'weak', sentence: 'Die ___ Suppe schmeckt gut. (f, Nom)', adjectiveBase: 'heiß', correctAnswer: 'heiße' },
+        { type: 'weak', sentence: 'Sie trägt die ___ Brille. (f, Akk)', adjectiveBase: 'neu', correctAnswer: 'neue' },
+        { type: 'weak', sentence: 'Er gratuliert der ___ Studentin. (f, Dat)', adjectiveBase: 'fleißig', correctAnswer: 'fleißigen' },
+        { type: 'weak', sentence: 'Die Bluse dieser ___ Frau ist weiß. (f, Gen)', adjectiveBase: 'nett', correctAnswer: 'netten' },
+        // --- Neuter Singular ---
+        { type: 'weak', sentence: 'Das ___ Kind lacht. (n, Nom)', adjectiveBase: 'klein', correctAnswer: 'kleine' },
+        { type: 'weak', sentence: 'Er öffnet das ___ Fenster. (n, Akk)', adjectiveBase: 'groß', correctAnswer: 'große' },
+        { type: 'weak', sentence: 'Sie spielt mit dem ___ Spielzeug. (n, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'weak', sentence: 'Der Titel des ___ Buches ist interessant. (n, Gen)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'weak', sentence: 'Jenes ___ Haus gehört uns. (n, Nom)', adjectiveBase: 'schön', correctAnswer: 'schöne' },
+        { type: 'weak', sentence: 'Sie kauft das ___ Kleid. (n, Akk)', adjectiveBase: 'rot', correctAnswer: 'rote' },
+        { type: 'weak', sentence: 'Er sitzt an demselben ___ Tisch. (n, Dat)', adjectiveBase: 'rund', correctAnswer: 'runden' },
+        { type: 'weak', sentence: 'Die Farbe dieses ___ Bildes ist intensiv. (n, Gen)', adjectiveBase: 'berühmt', correctAnswer: 'berühmten' },
+        { type: 'weak', sentence: 'Das ___ Fahrrad steht im Keller. (n, Nom)', adjectiveBase: 'alt', correctAnswer: 'alte' },
+        { type: 'weak', sentence: 'Ich fahre das ___ Auto. (n, Akk)', adjectiveBase: 'schnell', correctAnswer: 'schnelle' },
+        { type: 'weak', sentence: 'Sie schreibt mit dem ___ Bleistift. (n, Dat)', adjectiveBase: 'spitz', correctAnswer: 'spitzen' },
+        { type: 'weak', sentence: 'Der Inhalt des ___ Glases ist süß. (n, Gen)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        // --- Plural ---
+        { type: 'weak', sentence: 'Die ___ Vögel singen. (pl, Nom)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        { type: 'weak', sentence: 'Wir sehen die ___ Berge in der Ferne. (pl, Akk)', adjectiveBase: 'hoch', correctAnswer: 'hohen' },
+        { type: 'weak', sentence: 'Er spricht mit den ___ Gästen. (pl, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'weak', sentence: 'Die Namen der ___ Schüler stehen auf der Liste. (pl, Gen)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'weak', sentence: 'Alle ___ Antworten waren richtig. (pl, Nom)', adjectiveBase: 'richtig', correctAnswer: 'richtigen' },
+        { type: 'weak', sentence: 'Sie kauft dieselben ___ Schuhe. (pl, Akk)', adjectiveBase: 'bequem', correctAnswer: 'bequemen' },
+        { type: 'weak', sentence: 'Wir spielen mit jenen ___ Bällen. (pl, Dat)', adjectiveBase: 'bunt', correctAnswer: 'bunten' },
+        { type: 'weak', sentence: 'Die Ergebnisse dieser ___ Studien sind positiv. (pl, Gen)', adjectiveBase: 'wichtig', correctAnswer: 'wichtigen' },
+        { type: 'weak', sentence: 'Die ___ Blumen blühen schön. (pl, Nom)', adjectiveBase: 'gelb', correctAnswer: 'gelben' },
+        { type: 'weak', sentence: 'Er liest die ___ Bücher gern. (pl, Akk)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'weak', sentence: 'Sie tanzt mit den ___ Freunden. (pl, Dat)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'weak', sentence: 'Die Probleme der ___ Leute sind ernst. (pl, Gen)', adjectiveBase: 'arm', correctAnswer: 'armen' },
+
+        // ========================================
+        // Mixed Declension (~50 examples)
+        // ========================================
+        // --- Masculine Singular ---
+        { type: 'mixed', sentence: 'Ein ___ Mann fragt nach dir. (m, Nom)', adjectiveBase: 'alt', correctAnswer: 'alter' },
+        { type: 'mixed', sentence: 'Ich sehe einen ___ Hund. (m, Akk)', adjectiveBase: 'groß', correctAnswer: 'großen' },
+        { type: 'mixed', sentence: 'Sie spricht mit einem ___ Kollegen. (m, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Das ist das Auto meines ___ Bruders. (m, Gen)', adjectiveBase: 'jung', correctAnswer: 'jungen' },
+        { type: 'mixed', sentence: 'Kein ___ Apfel liegt auf dem Tisch. (m, Nom)', adjectiveBase: 'rot', correctAnswer: 'roter' },
+        { type: 'mixed', sentence: 'Er hat keinen ___ Plan. (m, Akk)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'mixed', sentence: 'Sie hilft ihrem ___ Freund. (m, Dat)', adjectiveBase: 'krank', correctAnswer: 'kranken' },
+        { type: 'mixed', sentence: 'Der Name seines ___ Sohnes ist Paul. (m, Gen)', adjectiveBase: 'erst', correctAnswer: 'ersten' },
+        { type: 'mixed', sentence: 'Unser ___ Lehrer ist streng. (m, Nom)', adjectiveBase: 'neu', correctAnswer: 'neuer' },
+        { type: 'mixed', sentence: 'Ich brauche euren ___ Rat. (m, Akk)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'mixed', sentence: 'Er fährt mit seinem ___ Wagen. (m, Dat)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'mixed', sentence: 'Die Unterschrift ihres ___ Mannes fehlt. (m, Gen)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        // --- Feminine Singular ---
+        { type: 'mixed', sentence: 'Eine ___ Frau wartet dort. (f, Nom)', adjectiveBase: 'jung', correctAnswer: 'junge' },
+        { type: 'mixed', sentence: 'Er kauft eine ___ Blume. (f, Akk)', adjectiveBase: 'schön', correctAnswer: 'schöne' },
+        { type: 'mixed', sentence: 'Sie geht mit einer ___ Freundin ins Kino. (f, Dat)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'mixed', sentence: 'Das ist die Tasche meiner ___ Schwester. (f, Gen)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        { type: 'mixed', sentence: 'Keine ___ Wolke ist am Himmel. (f, Nom)', adjectiveBase: 'dunkel', correctAnswer: 'dunkle' },
+        { type: 'mixed', sentence: 'Ich habe keine ___ Ahnung. (f, Akk)', adjectiveBase: 'gut', correctAnswer: 'gute' },
+        { type: 'mixed', sentence: 'Er spricht mit seiner ___ Mutter. (f, Dat)', adjectiveBase: 'lieb', correctAnswer: 'lieben' },
+        { type: 'mixed', sentence: 'Der Geburtstag ihrer ___ Tochter war gestern. (f, Gen)', adjectiveBase: 'erst', correctAnswer: 'ersten' },
+        { type: 'mixed', sentence: 'Unsere ___ Nachbarin ist nett. (f, Nom)', adjectiveBase: 'neu', correctAnswer: 'neue' },
+        { type: 'mixed', sentence: 'Ich sehe eure ___ Katze. (f, Akk)', adjectiveBase: 'schwarz', correctAnswer: 'schwarze' },
+        { type: 'mixed', sentence: 'Sie spielt mit ihrer ___ Puppe. (f, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Der Schmuck seiner ___ Frau ist teuer. (f, Gen)', adjectiveBase: 'reich', correctAnswer: 'reichen' },
+        // --- Neuter Singular ---
+        { type: 'mixed', sentence: 'Ein ___ Kind spielt im Garten. (n, Nom)', adjectiveBase: 'klein', correctAnswer: 'kleines' },
+        { type: 'mixed', sentence: 'Sie liest ein ___ Buch. (n, Akk)', adjectiveBase: 'spannend', correctAnswer: 'spannendes' },
+        { type: 'mixed', sentence: 'Er hilft einem ___ Mädchen. (n, Dat)', adjectiveBase: 'arm', correctAnswer: 'armen' },
+        { type: 'mixed', sentence: 'Das Dach unseres ___ Hauses ist undicht. (n, Gen)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'mixed', sentence: 'Kein ___ Problem ist unlösbar. (n, Nom)', adjectiveBase: 'groß', correctAnswer: 'großes' },
+        { type: 'mixed', sentence: 'Er möchte kein ___ Eis. (n, Akk)', adjectiveBase: 'kalt', correctAnswer: 'kaltes' },
+        { type: 'mixed', sentence: 'Sie sitzt auf ihrem ___ Sofa. (n, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Der Preis eures ___ Autos ist fair. (n, Gen)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Mein ___ Hemd ist sauber. (n, Nom)', adjectiveBase: 'weiß', correctAnswer: 'weißes' },
+        { type: 'mixed', sentence: 'Ich putze mein ___ Zimmer. (n, Akk)', adjectiveBase: 'ganz', correctAnswer: 'ganzes' },
+        { type: 'mixed', sentence: 'Er arbeitet an seinem ___ Projekt. (n, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Die Tür ihres ___ Büros ist offen. (n, Gen)', adjectiveBase: 'eigen', correctAnswer: 'eigenen' },
+        // --- Plural --- (Follows Weak Pattern after 'keine' or Possessives)
+        { type: 'mixed', sentence: 'Meine ___ Eltern kommen zu Besuch. (pl, Nom)', adjectiveBase: 'lieb', correctAnswer: 'lieben' },
+        { type: 'mixed', sentence: 'Er hat keine ___ Geschwister. (pl, Akk)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        { type: 'mixed', sentence: 'Wir sprechen mit unseren ___ Freunden. (pl, Dat)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'mixed', sentence: 'Die Namen ihrer ___ Kinder sind Anna und Ben. (pl, Gen)', adjectiveBase: 'klein', correctAnswer: 'kleinen' },
+        { type: 'mixed', sentence: 'Seine ___ Noten sind gut. (pl, Nom)', adjectiveBase: 'gut', correctAnswer: 'guten' },
+        { type: 'mixed', sentence: 'Sie verkauft ihre ___ Bücher. (pl, Akk)', adjectiveBase: 'alt', correctAnswer: 'alten' },
+        { type: 'mixed', sentence: 'Er spielt mit seinen ___ Spielsachen. (pl, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Der Garten unserer ___ Nachbarn ist schön. (pl, Gen)', adjectiveBase: 'nett', correctAnswer: 'netten' },
+        { type: 'mixed', sentence: 'Keine ___ Fehler wurden gefunden. (pl, Nom)', adjectiveBase: 'gravierend', correctAnswer: 'gravierenden' },
+        { type: 'mixed', sentence: 'Ich habe keine ___ Fragen mehr. (pl, Akk)', adjectiveBase: 'weiter', correctAnswer: 'weiteren' },
+        { type: 'mixed', sentence: 'Sie hilft ihren ___ Kollegen. (pl, Dat)', adjectiveBase: 'neu', correctAnswer: 'neuen' },
+        { type: 'mixed', sentence: 'Trotz seiner ___ Warnungen ging er. (pl, Gen)', adjectiveBase: 'eindringlich', correctAnswer: 'eindringlichen' },
+    ];
+
+
+    // --- Quiz State ---
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let errors = []; // Store { prompt: fullPromptText, userAnswer, correctAnswer }
+    const maxQuestions = 20; // Number of questions per quiz round
+
+    // --- DOM Elements ---
+    const modeSelectionEl = document.getElementById('mode-selection');
+    const quizAreaEl = document.getElementById('quiz-area');
+    const resultsAreaEl = document.getElementById('results-area');
+    const quizTitleEl = document.getElementById('quiz-title');
+    const questionCounterEl = document.getElementById('question-counter');
+    const promptEl = document.getElementById('prompt');
+    const userAnswerEl = document.getElementById('user-answer');
+    const submitButton = document.getElementById('submit-answer');
+    const feedbackEl = document.getElementById('feedback');
+    const finalScoreEl = document.getElementById('final-score');
+    const percentageEl = document.getElementById('percentage');
+    const mistakesContainerEl = document.getElementById('mistakes-container');
+    const mistakesListEl = document.getElementById('mistakes-list');
+    const noMistakesEl = document.getElementById('no-mistakes');
+
+    // --- Functions ---
+
+    // Normalize string for comparison (lowercase, umlauts, ß)
+    function normalizeString(str) {
+        if (typeof str !== 'string') return '';
+        return str.toLowerCase()
+                  .replace(/ä/g, 'a')
+                  .replace(/ö/g, 'o')
+                  .replace(/ü/g, 'u')
+                  .replace(/ß/g, 'ss');
+    }
+
+    // Shuffle array function (Fisher-Yates)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function startQuiz(declensionType) {
+        // Filter, shuffle, and slice questions
+        let availableQuestions = allQuestions.filter(q => q.type === declensionType);
+        if (availableQuestions.length < maxQuestions) {
+             console.warn(`Warning: Only ${availableQuestions.length} questions available for type '${declensionType}', less than the desired ${maxQuestions}.`);
+        }
+        shuffleArray(availableQuestions);
+        currentQuestions = availableQuestions.slice(0, maxQuestions); // Limit to maxQuestions
+
+        if (currentQuestions.length === 0) {
+            alert(`No questions found for type: ${declensionType}. Cannot start quiz.`);
+            return;
+        }
+
+
+        currentQuestionIndex = 0;
+        score = 0;
+        errors = [];
+
+        // Set quiz title
+        const typeName = declensionType.charAt(0).toUpperCase() + declensionType.slice(1);
+        quizTitleEl.textContent = `${typeName} Declension Quiz`;
+
+        modeSelectionEl.style.display = 'none';
+        resultsAreaEl.style.display = 'none';
+        quizAreaEl.style.display = 'block';
+
+        displayQuestion();
+    }
+
+    function displayQuestion() {
+        if (currentQuestionIndex < currentQuestions.length) {
+            const question = currentQuestions[currentQuestionIndex];
+
+            // Format the prompt with the sentence and hint
+            const sentenceHTML = question.sentence.replace('___', '<span class="placeholder">___</span>');
+            const hintHTML = `<span class="hint">Adjective: (${question.adjectiveBase})</span>`;
+            promptEl.innerHTML = sentenceHTML + hintHTML;
+
+            questionCounterEl.textContent = `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
+            userAnswerEl.value = '';
+            feedbackEl.textContent = '';
+            feedbackEl.className = 'feedback'; // Reset class
+            userAnswerEl.disabled = false;
+            submitButton.disabled = false;
+            userAnswerEl.focus();
+        } else {
+            showResults();
+        }
+    }
+
+    function checkAnswer() {
+        if (userAnswerEl.disabled) return; // Prevent multiple submissions
+
+        const question = currentQuestions[currentQuestionIndex];
+        const userAnswer = userAnswerEl.value.trim();
+        const correctAnswer = question.correctAnswer;
+
+        // Normalize for comparison
+        const normalizedUserAnswer = normalizeString(userAnswer);
+        const normalizedCorrectAnswer = normalizeString(correctAnswer);
+
+        userAnswerEl.disabled = true;
+        submitButton.disabled = true;
+
+        if (normalizedUserAnswer === normalizedCorrectAnswer) {
+            score++;
+            feedbackEl.textContent = 'Correct!';
+            feedbackEl.className = 'feedback correct';
+        } else {
+            // Show the correctly capitalized answer in feedback
+            feedbackEl.innerHTML = `Incorrect! The answer is: <strong>${correctAnswer}</strong>`;
+            feedbackEl.className = 'feedback incorrect';
+            errors.push({
+                 prompt: `${question.sentence} (Hint: ${question.adjectiveBase})`,
+                 userAnswer: userAnswer || '(empty)',
+                 correctAnswer: correctAnswer // Store original correct answer for display
+            });
+        }
+
+        currentQuestionIndex++;
+
+        setTimeout(displayQuestion, 1800); // 1.8 second delay
+    }
+
+    function showResults() {
+        quizAreaEl.style.display = 'none';
+        resultsAreaEl.style.display = 'block';
+
+        const totalQuestions = currentQuestions.length; // Use actual number asked
+        const percentageScore = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+        finalScoreEl.textContent = `Final Score: ${score} / ${totalQuestions}`;
+        percentageEl.textContent = `Percentage: ${percentageScore}%`;
+
+        mistakesListEl.innerHTML = ''; // Clear previous errors
+        if (errors.length > 0) {
+            mistakesContainerEl.style.display = 'block';
+            noMistakesEl.style.display = 'none';
+            errors.forEach(err => {
+                const li = document.createElement('li');
+                 li.innerHTML = `<span class="prompt-review">${err.prompt.replace('___', '___')}</span>
+                                Your answer: <span class="user-ans">${err.userAnswer}</span> <br>
+                                Correct answer: <span class="correct-ans">${err.correctAnswer}</span>`;
+                mistakesListEl.appendChild(li);
+            });
+        } else {
+             mistakesContainerEl.style.display = 'none';
+             noMistakesEl.style.display = 'block';
+        }
+    }
+
+    function resetQuiz() {
+        resultsAreaEl.style.display = 'none';
+        quizAreaEl.style.display = 'none';
+        modeSelectionEl.style.display = 'block';
+        // Reset state variables
+        currentQuestions = [];
+        currentQuestionIndex = 0;
+        score = 0;
+        errors = [];
+        // Clear potential leftover feedback/input
+        feedbackEl.textContent = '';
+        feedbackEl.className = 'feedback';
+        userAnswerEl.value = '';
+    }
+
+    // Allow submitting with Enter key in the input field
+    userAnswerEl.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter' && !submitButton.disabled) {
+            event.preventDefault();
+            checkAnswer();
+        }
+    });
+
+</script>
+
+</body>
+</html>

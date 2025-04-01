@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Pronoun Practice</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #eef2f7; /* Light blue-grey background */
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1em;
+        }
+         h1 {
+             margin-top: 0;
+         }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+         button.secondary:hover {
+             background-color: #5a6268;
+         }
+
+        #mode-selection button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        #quiz-area, #results-area {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #prompt {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            white-space: pre-line; /* Respect newlines in prompt */
+        }
+         #prompt strong {
+             color: var(--primary-color);
+         }
+
+        #user-answer {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 1.2em; /* Prevent layout shift */
+        }
+
+        .correct {
+            color: var(--success-color);
+        }
+
+        .incorrect {
+            color: var(--danger-color);
+        }
+
+        #results-area ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        #results-area li {
+            background-color: var(--light-color);
+            border: 1px solid #e9ecef;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+        }
+         #results-area li span {
+             font-weight: bold;
+         }
+         #results-area li .user-ans {
+             color: var(--danger-color);
+             font-style: italic;
+         }
+         #results-area li .correct-ans {
+              color: var(--success-color);
+              font-weight: bold;
+         }
+
+        #question-counter {
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+         /* Basic responsiveness */
+         @media (max-width: 600px) {
+             body {
+                 padding: 10px;
+             }
+             #app {
+                 padding: 20px;
+             }
+             button {
+                 padding: 10px 15px;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>German Pronoun Practice</h1>
+
+        <div id="mode-selection">
+            <h2>Choose Mode:</h2>
+            <button onclick="startQuiz('personal')">Personal Pronouns</button>
+            <button onclick="startQuiz('possessive')">Possessive Pronouns</button>
+            <button onclick="startQuiz('reflexive')">Reflexive Pronouns</button>
+        </div>
+
+        <div id="quiz-area" style="display: none;">
+            <h2 id="quiz-title">Quiz</h2>
+            <p id="question-counter"></p>
+            <p id="prompt"></p>
+            <input type="text" id="user-answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button id="submit-answer" onclick="checkAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <button class="secondary" onclick="resetQuiz()">End Quiz & Change Mode</button>
+        </div>
+
+        <div id="results-area" style="display: none;">
+            <h2>Quiz Finished</h2>
+            <p id="final-score"></p>
+            <p id="percentage"></p>
+            <div id="mistakes-container">
+                 <h3>Review Your Mistakes:</h3>
+                 <ul id="mistakes-list"></ul>
+            </div>
+             <p id="no-mistakes" style="display: none; color: var(--success-color); font-weight: bold;">Congratulations! You made no mistakes.</p>
+            <button onclick="resetQuiz()">Practice Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const personalPronouns = {
+            nominative: { '1s': 'ich', '2s': 'du', '3s_m': 'er', '3s_f': 'sie', '3s_n': 'es', '1p': 'wir', '2p': 'ihr', '3p': 'sie', '2F': 'Sie' },
+            accusative: { '1s': 'mich', '2s': 'dich', '3s_m': 'ihn', '3s_f': 'sie', '3s_n': 'es', '1p': 'uns', '2p': 'euch', '3p': 'sie', '2F': 'Sie' },
+            dative: { '1s': 'mir', '2s': 'dir', '3s_m': 'ihm', '3s_f': 'ihr', '3s_n': 'ihm', '1p': 'uns', '2p': 'euch', '3p': 'ihnen', '2F': 'Ihnen' }
+        };
+        const personalCases = Object.keys(personalPronouns);
+        const personalPersonKeys = Object.keys(personalPronouns.nominative);
+
+        const reflexivePronouns = {
+            accusative: { '1s': 'mich', '2s': 'dich', '3s_m': 'sich', '3s_f': 'sich', '3s_n': 'sich', '1p': 'uns', '2p': 'euch', '3p': 'sich', '2F': 'sich' },
+            dative: { '1s': 'mir', '2s': 'dir', '3s_m': 'sich', '3s_f': 'sich', '3s_n': 'sich', '1p': 'uns', '2p': 'euch', '3p': 'sich', '2F': 'sich' }
+        };
+        const reflexiveCases = Object.keys(reflexivePronouns);
+        const reflexivePersonKeys = Object.keys(reflexivePronouns.accusative);
+
+        const possessivePronouns = {
+            '1s': { nominative: {'m': 'mein', 'f': 'meine', 'n': 'mein', 'p': 'meine'}, accusative: {'m': 'meinen', 'f': 'meine', 'n': 'mein', 'p': 'meine'}, dative: {'m': 'meinem', 'f': 'meiner', 'n': 'meinem', 'p': 'meinen'} },
+            '2s': { nominative: {'m': 'dein', 'f': 'deine', 'n': 'dein', 'p': 'deine'}, accusative: {'m': 'deinen', 'f': 'deine', 'n': 'dein', 'p': 'deine'}, dative: {'m': 'deinem', 'f': 'deiner', 'n': 'deinem', 'p': 'deinen'} },
+            '3s_m': { nominative: {'m': 'sein', 'f': 'seine', 'n': 'sein', 'p': 'seine'}, accusative: {'m': 'seinen', 'f': 'seine', 'n': 'sein', 'p': 'seine'}, dative: {'m': 'seinem', 'f': 'seiner', 'n': 'seinem', 'p': 'seinen'} },
+            '3s_n': { nominative: {'m': 'sein', 'f': 'seine', 'n': 'sein', 'p': 'seine'}, accusative: {'m': 'seinen', 'f': 'seine', 'n': 'sein', 'p': 'seine'}, dative: {'m': 'seinem', 'f': 'seiner', 'n': 'seinem', 'p': 'seinen'} },
+            '3s_f': { nominative: {'m': 'ihr', 'f': 'ihre', 'n': 'ihr', 'p': 'ihre'}, accusative: {'m': 'ihren', 'f': 'ihre', 'n': 'ihr', 'p': 'ihre'}, dative: {'m': 'ihrem', 'f': 'ihrer', 'n': 'ihrem', 'p': 'ihren'} },
+            '3p': { nominative: {'m': 'ihr', 'f': 'ihre', 'n': 'ihr', 'p': 'ihre'}, accusative: {'m': 'ihren', 'f': 'ihre', 'n': 'ihr', 'p': 'ihre'}, dative: {'m': 'ihrem', 'f': 'ihrer', 'n': 'ihrem', 'p': 'ihren'} },
+            '1p': { nominative: {'m': 'unser', 'f': 'unsere', 'n': 'unser', 'p': 'unsere'}, accusative: {'m': 'unseren', 'f': 'unsere', 'n': 'unser', 'p': 'unsere'}, dative: {'m': 'unserem', 'f': 'unserer', 'n': 'unserem', 'p': 'unseren'} },
+            '2p': { nominative: {'m': 'euer', 'f': 'eure', 'n': 'euer', 'p': 'eure'}, accusative: {'m': 'euren', 'f': 'eure', 'n': 'euer', 'p': 'eure'}, dative: {'m': 'eurem', 'f': 'eurer', 'n': 'eurem', 'p': 'euren'} },
+            '2F': { nominative: {'m': 'Ihr', 'f': 'Ihre', 'n': 'Ihr', 'p': 'Ihre'}, accusative: {'m': 'Ihren', 'f': 'Ihre', 'n': 'Ihr', 'p': 'Ihre'}, dative: {'m': 'Ihrem', 'f': 'Ihrer', 'n': 'Ihrem', 'p': 'Ihren'} }
+        };
+        const possessivePossessorKeys = Object.keys(possessivePronouns);
+        const possessiveCases = Object.keys(possessivePronouns['1s']);
+        const possessiveGenderNumberKeys = Object.keys(possessivePronouns['1s'].nominative);
+
+        const personEnglishMap = { '1s': "I", '2s': "you", '3s_m': "he", '3s_f': "she", '3s_n': "it", '1p': "we", '2p': "you", '3p': "they", '2F': "You" };
+        const personDescriptionMap = {
+            '1s': "1st person singular",
+            '2s': "2nd person singular", // Removed "(informal)"
+            '3s_m': "3rd person singular masculine",
+            '3s_f': "3rd person singular feminine",
+            '3s_n': "3rd person singular neuter",
+            '1p': "1st person plural",
+            '2p': "2nd person plural",   // Removed "(informal)"
+            '3p': "3rd person plural",
+            '2F': "2nd person formal" // Kept formal distinction
+        };
+        const genderNumberMap = { 'm': "masculine", 'f': "feminine", 'n': "neuter", 'p': "plural" };
+        const possessiveLimit = 30;
+
+        // --- State Variables ---
+        let currentMode = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let mistakes = [];
+        let totalQuestions = 0;
+        let quizActive = false; // To prevent double submission
+
+        // --- DOM Elements ---
+        const modeSelectionDiv = document.getElementById('mode-selection');
+        const quizAreaDiv = document.getElementById('quiz-area');
+        const resultsAreaDiv = document.getElementById('results-area');
+        const promptP = document.getElementById('prompt');
+        const userAnswerInput = document.getElementById('user-answer');
+        const feedbackP = document.getElementById('feedback');
+        const questionCounterP = document.getElementById('question-counter');
+        const finalScoreP = document.getElementById('final-score');
+        const percentageP = document.getElementById('percentage');
+        const mistakesListUl = document.getElementById('mistakes-list');
+        const mistakesContainerDiv = document.getElementById('mistakes-container');
+        const noMistakesP = document.getElementById('no-mistakes');
+        const quizTitleH2 = document.getElementById('quiz-title');
+        const submitButton = document.getElementById('submit-answer');
+
+
+        // --- Helper Functions ---
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Get Cartesian Product (like itertools.product)
+        function getProduct(...arrays) {
+            return arrays.reduce((acc, array) => {
+                const res = [];
+                acc.forEach(a => {
+                    array.forEach(b => {
+                        res.push(a.concat([b]));
+                    });
+                });
+                return res;
+            }, [[]]);
+        }
+
+        function getPersonDescription(personKey) {
+            const englishPronoun = personEnglishMap[personKey] || "?";
+            const description = personDescriptionMap[personKey] || "Unknown Person";
+            return `${englishPronoun} (${description})`;
+        }
+
+        function displayElement(element, show) {
+            element.style.display = show ? 'block' : 'none';
+        }
+
+        function getPromptAndAnswer(mode, combo) {
+            let prompt = "";
+            let answer = "";
+            let details = { type: mode };
+
+            try {
+                if (mode === 'personal') {
+                    const [caseKey, personKey] = combo;
+                    prompt = `What is the <strong>${caseKey.toUpperCase()}</strong> personal pronoun for <strong>${getPersonDescription(personKey)}</strong>?`;
+                    answer = personalPronouns[caseKey][personKey];
+                    details.case = caseKey;
+                    details.person = personKey;
+                } else if (mode === 'reflexive') {
+                    const [caseKey, personKey] = combo;
+                     prompt = `What is the <strong>${caseKey.toUpperCase()}</strong> reflexive pronoun for <strong>${getPersonDescription(personKey)}</strong>?`;
+                    answer = reflexivePronouns[caseKey][personKey];
+                    details.case = caseKey;
+                    details.person = personKey;
+                } else if (mode === 'possessive') {
+                    const [possessorKey, caseKey, genderKey] = combo;
+                    const possessorDesc = getPersonDescription(possessorKey);
+                    const genderDesc = genderNumberMap[genderKey];
+                    prompt = `What is the <strong>${caseKey.toUpperCase()}</strong> possessive pronoun for <strong>${possessorDesc}</strong>\nmodifying a <strong>${genderDesc.toUpperCase()}</strong> noun?`;
+                    answer = possessivePronouns[possessorKey][caseKey][genderKey];
+                    details.possessor = possessorKey;
+                    details.case = caseKey;
+                    details.gender = genderKey;
+                }
+            } catch (error) {
+                 console.error("Error generating prompt/answer:", error, "Mode:", mode, "Combo:", combo);
+                 prompt = "Error generating question.";
+                 answer = ""; // Prevent potential errors later
+                 details.error = true;
+            }
+            return { prompt, answer, details };
+        }
+
+
+        // --- Core Functions ---
+
+        function startQuiz(mode) {
+            currentMode = mode;
+            let allCombinations = [];
+            let modeTitle = "";
+            let infoMessage = "";
+
+            if (mode === 'personal') {
+                modeTitle = "Personal Pronouns";
+                allCombinations = getProduct(personalCases, personalPersonKeys);
+            } else if (mode === 'reflexive') {
+                 modeTitle = "Reflexive Pronouns";
+                allCombinations = getProduct(reflexiveCases, reflexivePersonKeys);
+            } else if (mode === 'possessive') {
+                 modeTitle = "Possessive Pronouns";
+                const fullCombinations = getProduct(possessivePossessorKeys, possessiveCases, possessiveGenderNumberKeys);
+                if (fullCombinations.length > possessiveLimit) {
+                    shuffleArray(fullCombinations); // Shuffle before sampling
+                    allCombinations = fullCombinations.slice(0, possessiveLimit);
+                    infoMessage = `(Showing ${possessiveLimit} randomly selected questions out of ${fullCombinations.length} total combinations)`;
+                } else {
+                    allCombinations = fullCombinations;
+                }
+            }
+
+            currentQuestions = [...allCombinations]; // Copy combinations
+            shuffleArray(currentQuestions);
+            totalQuestions = currentQuestions.length;
+
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            mistakes = [];
+            quizActive = true;
+
+            // Update UI
+            quizTitleH2.textContent = modeTitle + " Quiz";
+            displayElement(modeSelectionDiv, false);
+            displayElement(resultsAreaDiv, false);
+            displayElement(quizAreaDiv, true);
+            feedbackP.textContent = infoMessage; // Show info msg initially
+             feedbackP.className = ''; // Reset feedback class
+
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+             if (!quizActive) return; // Don't proceed if quiz ended prematurely
+
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const currentCombo = currentQuestions[currentQuestionIndex];
+            const { prompt, answer, details } = getPromptAndAnswer(currentMode, currentCombo);
+
+             // Store answer and details on the input element for checkAnswer
+             userAnswerInput.dataset.correctAnswer = answer;
+             userAnswerInput.dataset.details = JSON.stringify(details);
+
+            questionCounterP.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+            promptP.innerHTML = prompt; // Use innerHTML because prompt contains <strong> tags
+            userAnswerInput.value = '';
+            if (feedbackP.textContent.startsWith('(')) { // Only clear if it's not the initial info msg
+                 // Keep the info message for the first question
+            } else {
+                 feedbackP.textContent = ''; // Clear previous feedback
+                 feedbackP.className = '';
+            }
+            userAnswerInput.disabled = false;
+            submitButton.disabled = false;
+            userAnswerInput.focus();
+        }
+
+        function checkAnswer() {
+            if (!quizActive) return; // Prevent checking after quiz ends
+
+            const userAnswer = userAnswerInput.value.trim();
+            const correctAnswer = userAnswerInput.dataset.correctAnswer;
+            const details = JSON.parse(userAnswerInput.dataset.details);
+
+            userAnswerInput.disabled = true; // Disable input during feedback
+            submitButton.disabled = true;
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                feedbackP.textContent = 'Correct!';
+                feedbackP.className = 'correct';
+            } else {
+                feedbackP.textContent = `Incorrect. The correct answer was: ${correctAnswer}`;
+                feedbackP.className = 'incorrect';
+                mistakes.push({
+                    ...details,
+                    user_answer: userAnswer,
+                    correct_answer: correctAnswer
+                });
+            }
+
+            currentQuestionIndex++;
+
+            // Wait a moment before showing the next question or results
+            setTimeout(() => {
+                 if (quizActive) { // Check again in case resetQuiz was called
+                     displayQuestion();
+                 }
+            }, userAnswer === correctAnswer ? 800 : 1500); // Shorter delay for correct answers
+        }
+
+        function showResults() {
+             quizActive = false; // Mark quiz as inactive
+            const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(1) : 0;
+
+            finalScoreP.textContent = `Your final score: ${score} out of ${totalQuestions}`;
+            percentageP.textContent = `That's ${percentage}% correct.`;
+
+            mistakesListUl.innerHTML = ''; // Clear previous mistakes
+            if (mistakes.length === 0) {
+                displayElement(mistakesContainerDiv, false);
+                displayElement(noMistakesP, true);
+            } else {
+                displayElement(mistakesContainerDiv, true);
+                 displayElement(noMistakesP, false);
+                mistakes.forEach(m => {
+                    const li = document.createElement('li');
+                    let mistakeDesc = "";
+                    const userAns = m.user_answer ? `'<span class="user-ans">${m.user_answer}</span>'` : "[No Answer]";
+                    const correctAns = `<span class="correct-ans">${m.correct_answer}</span>`;
+
+                    if (m.type === "personal" || m.type === "reflexive") {
+                        const typeCap = m.type.charAt(0).toUpperCase() + m.type.slice(1);
+                        mistakeDesc = `<strong>${typeCap} (${m.case.toUpperCase()})</strong>: For '<strong>${getPersonDescription(m.person)}</strong>', you wrote ${userAns}, Correct: ${correctAns}`;
+                    } else if (m.type === "possessive") {
+                        const genderDesc = genderNumberMap[m.gender];
+                        mistakeDesc = `<strong>Possessive (${m.case.toUpperCase()}, ${genderDesc} noun)</strong>: For '<strong>${getPersonDescription(m.possessor)}</strong>', you wrote ${userAns}, Correct: ${correctAns}`;
+                    }
+                     li.innerHTML = mistakeDesc;
+                    mistakesListUl.appendChild(li);
+                });
+            }
+
+            displayElement(quizAreaDiv, false);
+            displayElement(resultsAreaDiv, true);
+        }
+
+         function resetQuiz() {
+             quizActive = false; // Ensure any pending timeouts don't trigger displayQuestion
+             currentMode = null;
+             currentQuestions = [];
+             currentQuestionIndex = 0;
+             score = 0;
+             mistakes = [];
+             totalQuestions = 0;
+
+             // Reset UI elements
+             userAnswerInput.value = '';
+             feedbackP.textContent = '';
+             feedbackP.className = '';
+             questionCounterP.textContent = '';
+             promptP.innerHTML = ''; // Clear prompt
+             userAnswerInput.disabled = false; // Re-enable
+             submitButton.disabled = false; // Re-enable
+
+             displayElement(quizAreaDiv, false);
+             displayElement(resultsAreaDiv, false);
+             displayElement(modeSelectionDiv, true); // Show mode selection again
+         }
+
+        // --- Event Listener for Enter Key ---
+        userAnswerInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && quizActive && !userAnswerInput.disabled) {
+                event.preventDefault(); // Prevent default form submission if it were in a form
+                checkAnswer();
+            }
+        });
+
+    </script>
+</body>
+</html>
