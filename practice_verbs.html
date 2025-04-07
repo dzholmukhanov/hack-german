@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German A2+ Word Practice</title>
+    <style>
+        /* CSS Styles from practice_pronouns.txt*/
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #eef2f7; /* Light blue-grey background */
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1em;
+        }
+         h1 {
+             margin-top: 0;
+         }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+         button.secondary:hover {
+             background-color: #5a6268;
+         }
+
+        #start-screen button {
+             margin-top: 20px;
+        }
+
+        #quiz-area, #results-area {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #prompt {
+            font-size: 1.2em; /* Slightly larger */
+            margin-bottom: 10px; /* Reduced margin */
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        #prompt span.blank {
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            min-width: 60px; /* Ensure some space for the blank */
+            border-bottom: 1px dashed var(--secondary-color);
+             margin: 0 5px;
+        }
+
+        #hint {
+            font-size: 0.95em;
+            color: var(--secondary-color);
+            margin-bottom: 20px; /* Increased margin */
+            font-style: italic;
+        }
+
+        #user-answer {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            text-align: center; /* Center input text */
+        }
+
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 1.2em; /* Prevent layout shift */
+        }
+
+        .correct {
+            color: var(--success-color);
+        }
+
+        .incorrect {
+            color: var(--danger-color);
+        }
+         .incorrect span.correct-ans-inline {
+             font-weight: bold;
+             color: var(--success-color);
+             font-style: normal;
+         }
+
+
+        #results-area ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        #results-area li {
+            background-color: var(--light-color);
+            border: 1px solid #e9ecef;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            line-height: 1.4;
+        }
+         #results-area li span {
+             font-weight: bold;
+         }
+         #results-area li .user-ans {
+             color: var(--danger-color);
+             font-style: italic;
+             text-decoration: line-through;
+         }
+         #results-area li .correct-ans {
+              color: var(--success-color);
+              font-weight: bold;
+         }
+         #results-area li .sentence {
+              display: block;
+              margin-bottom: 5px;
+              color: var(--dark-color);
+              font-size: 0.95em;
+         }
+
+
+        #question-counter {
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+         /* Basic responsiveness */
+         @media (max-width: 600px) {
+             body {
+                 padding: 10px;
+             }
+             #app {
+                 padding: 20px;
+             }
+             button {
+                 padding: 10px 15px;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Verb Practice</h1>
+        <p>Fill in the blank with the correct German word. Case and umlauts (ä/ö/ü/ß) don't matter.</p>
+
+        <div id="start-screen">
+             <button onclick="startQuiz()">Start Quiz (30 Questions)</button>
+        </div>
+
+        <div id="quiz-area" style="display: none;">
+            <h2 id="quiz-title">Action, Emotion & Interaction Verbs</h2>
+            <p id="question-counter"></p>
+            <p id="prompt"></p>
+            <p id="hint"></p>
+            <input type="text" id="user-answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button id="submit-answer" onclick="checkAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <button class="secondary" onclick="resetQuiz()">End Quiz & Restart</button>
+        </div>
+
+        <div id="results-area" style="display: none;">
+            <h2>Quiz Finished</h2>
+            <p id="final-score"></p>
+            <p id="percentage"></p>
+            <div id="mistakes-container">
+                 <h3>Review Your Mistakes:</h3>
+                 <ul id="mistakes-list"></ul>
+            </div>
+             <p id="no-mistakes" style="display: none; color: var(--success-color); font-weight: bold;">Congratulations! You made no mistakes.</p>
+            <button onclick="resetQuiz()">Practice Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+const quizQuestions = [
+            // --- Original 30 ---
+            { german: "Wir müssen _______.", english: "We need to speak.", answer: "sprechen" },
+            { german: "Er ______ die Wahrheit.", english: "He says the truth.", answer: "sagt" }, // Conjugated
+            { german: "Ich _______ dir eine Geschichte.", english: "I'm telling you a story.", answer: "erzähle" }, // Conjugated
+            { german: "Sie _______ über das Ereignis.", english: "She reported about the event.", answer: "berichtete" }, // Past tense
+            { german: "Wir _______ über das Problem.", english: "We are discussing the problem.", answer: "diskutieren" },
+            { german: "Darf ich dich etwas ______?", english: "May I ask you something?", answer: "fragen" },
+            { german: "Er _______ nicht auf die Frage.", english: "He doesn't answer the question.", answer: "antwortet" }, // Conjugated
+            { german: "Können Sie mir bitte ______?", english: "Can you please help me?", answer: "helfen" },
+            { german: "Mein Bruder _______ bei einer Bank.", english: "My brother works at a bank.", answer: "arbeitet" }, // Conjugated
+            { german: "Wir _______ Deutsch zusammen.", english: "We learn German together.", answer: "lernen" },
+            { german: "Sie ______ gerne Bücher.", english: "She likes to read books.", answer: "liest" }, // Conjugated (strong verb)
+            { german: "Ich ______ einen Brief an meine Oma.", english: "I am writing a letter to my grandma.", answer: "schreibe" }, // Conjugated
+            { german: "Wir _______ uns morgen im Café.", english: "We are meeting tomorrow in the café.", answer: "treffen" },
+            { german: "Ich kann dich nicht _______. ", english: "I cannot understand you.", answer: "verstehen" },
+            { german: "Der Lehrer _______ die Grammatik.", english: "The teacher explains the grammar.", answer: "erklärt" }, // Conjugated
+            { german: "Ich _______ vor, ins Kino zu gehen.", english: "I suggest going to the cinema.", answer: "schlage" }, // Separable verb part
+            { german: "Wir müssen uns _______, was wir tun.", english: "We have to decide what we do.", answer: "entscheiden" },
+            { german: "Möchtest du am Kurs _______?", english: "Would you like to participate in the course?", answer: "teilnehmen" }, // Separable verb
+            { german: "Sie _______ sich auf die Prüfung vor.", english: "She prepares for the exam.", answer: "bereitet" }, // Separable verb part
+            { german: "Er _______, das Problem zu lösen.", english: "He tries to solve the problem.", answer: "versucht" }, // Conjugated
+            { german: "Die Freunde ______ über den Witz.", english: "The friends are laughing at the joke.", answer: "lachen" },
+            { german: "Das Baby beginnt zu ______.", english: "The baby starts to cry.", answer: "weinen" },
+            { german: "Wir ______ uns auf das Wochenende.", english: "We are looking forward to the weekend.", answer: "freuen" }, // Reflexive verb part
+            { german: "Ich ______ mich über den Stau.", english: "I'm annoyed about the traffic jam.", answer: "ärgere" }, // Reflexive verb part
+            { german: "In der neuen Stadt ______ sie sich einsam.", english: "She feels lonely in the new city.", answer: "fühlt" }, // Conjugated
+            { german: "Er sagt, dass er sie ______. ", english: "He says that he loves her.", answer: "liebt" }, // Conjugated
+            { german: "Sie ______ es, früh aufzustehen.", english: "She hates getting up early.", answer: "hasst" }, // Conjugated
+            { german: "Wir ______ auf besseres Wetter.", english: "We hope for better weather.", answer: "hoffen" },
+            { german: "Das Kind ______ sich vor dem Hund.", english: "The child is afraid of the dog.", answer: "fürchtet" }, // Reflexive verb part
+            { german: "Ich ______ mich über seine Reaktion.", english: "I wonder about/am surprised by his reaction.", answer: "wundere" }, // Reflexive verb part
+
+            // --- New 50 ---
+            { german: "Wir _______ unsere Großeltern am Wochenende.", english: "We visit our grandparents on the weekend.", answer: "besuchen" },
+            { german: "Ich möchte dich zu meiner Party _______. ", english: "I want to invite you to my party.", answer: "einladen" },
+            { german: "Können wir noch einen Kaffee _______?", english: "Can we order another coffee?", answer: "bestellen" },
+            { german: "Wer _______ die Rechnung?", english: "Who pays the bill?", answer: "bezahlt" }, // Conjugated
+            { german: "Sie _______ ein neues Kleid im Geschäft.", english: "She buys a new dress in the store.", answer: "kauft" }, // Conjugated
+            { german: "Er _______ sein altes Auto.", english: "He is selling his old car.", answer: "verkauft" }, // Conjugated
+            { german: "Wir _______ eine Wohnung in der Stadt.", english: "We rent an apartment in the city.", answer: "mieten" },
+            { german: "Kannst du bitte das Fenster _______?", english: "Can you please open the window?", answer: "öffnen" },
+            { german: "Er _______ die Tür leise hinter sich.", english: "He closes the door quietly behind him.", answer: "schließt" }, // Conjugated (with ß)
+            { german: "Der Film _______ um 20 Uhr an.", english: "The movie starts at 8 PM.", answer: "fängt" }, // Conjugated, separable
+            { german: "Es _______ auf zu regnen.", english: "It stops raining.", answer: "hört" }, // Conjugated, separable
+            { german: "Können Sie mir den Weg zum Bahnhof _______?", english: "Can you show me the way to the train station?", answer: "zeigen" },
+            { german: "Er _______ einen schweren Rucksack.", english: "He is carrying a heavy backpack.", answer: "trägt" }, // Conjugated (strong verb)
+            { german: "Ich möchte deine Freunde _______. ", english: "I would like to get to know your friends.", answer: "kennenlernen" },
+            { german: "Könnten Sie das bitte _______?", english: "Could you please repeat that?", answer: "wiederholen" },
+            { german: "Welches Restaurant können Sie _______?", english: "Which restaurant can you recommend?", answer: "empfehlen" }, // Strong verb
+            { german: "Du musst mir _______, vorsichtig zu sein.", english: "You have to promise me to be careful.", answer: "versprechen" }, // Strong verb
+            { german: "Meine Eltern _______ mir nicht, spät auszugehen.", english: "My parents don't allow me to go out late.", answer: "erlauben" },
+            { german: "Der Arzt _______ ihm das Rauchen.", english: "The doctor forbids him to smoke.", answer: "verbietet" }, // Conjugated (strong verb)
+            { german: "Darf ich dein Telefon _______?", english: "May I use your phone?", answer: "benutzen" },
+            { german: "Ich muss Geld _______. ", english: "I need to change money.", answer: "wechseln" },
+            { german: "Kannst du mein Fahrrad _______?", english: "Can you repair my bike?", answer: "reparieren" },
+            { german: "Sie _______ eine große Konferenz.", english: "She is organizing a big conference.", answer: "organisiert" }, // Conjugated
+            { german: "Wir _______ unseren Urlaub für den Sommer.", english: "We are planning our vacation for the summer.", answer: "planen" },
+            { german: "Kannst du mich vom Bahnhof _______?", english: "Can you pick me up from the train station?", answer: "abholen" }, // Separable verb
+            { german: "Soll ich etwas zum Essen _______?", english: "Should I bring something to eat along?", answer: "mitbringen" }, // Separable verb
+            { german: "Ich werde dich später _______. ", english: "I will call you later.", answer: "anrufen" }, // Separable verb
+            { german: "Die Kinder müssen ihr Zimmer _______. ", english: "The children have to tidy up their room.", answer: "aufräumen" }, // Separable verb
+            { german: "Wir _______ die Wohnung jeden Samstag.", english: "We clean the apartment every Saturday.", answer: "putzen" },
+            { german: "Was _______ du heute Abend?", english: "What are you cooking tonight?", answer: "kochst" }, // Conjugated
+            { german: "Sie _______ einen Kuchen zum Geburtstag.", english: "She is baking a cake for the birthday.", answer: "bäckt" }, // Conjugated (strong verb)
+            { german: "Er _______ seine Nachbarn freundlich.", english: "He greets his neighbors friendly.", answer: "grüßt" }, // Conjugated (with ß)
+            { german: "Wir müssen uns jetzt leider _______. ", english: "Unfortunately, we have to say goodbye now.", answer: "verabschieden" }, // Reflexive verb
+            { german: "Sie _______ sich lange über ihre Reise.", english: "They chatted for a long time about their trip.", answer: "unterhielten" }, // Past tense, reflexive
+            { german: "Die Geschwister _______ oft über Kleinigkeiten.", english: "The siblings often argue about small things.", answer: "streiten" },
+            { german: "Kannst du diesen Satz ins Englische _______?", english: "Can you translate this sentence into English?", answer: "übersetzen" },
+            { german: "Ich _______, dass es morgen regnen wird.", english: "I believe that it will rain tomorrow.", answer: "glaube" }, // Conjugated
+            { german: "_______ du, wie spät es ist?", english: "Do you know what time it is?", answer: "Weißt" }, // Conjugated (strong verb)
+            { german: "_______ Sie dieses Lied?", english: "Do you know this song?", answer: "Kennen" }, // Conjugated (formal)
+            { german: "Was _______ Sie dazu?", english: "What do you mean by that? / What's your opinion on that?", answer: "meinen" }, // Conjugated (formal)
+            { german: "Ich _______ dir alles Gute zum Geburtstag.", english: "I wish you all the best for your birthday.", answer: "wünsche" }, // Conjugated
+            { german: "Wir möchten dir zum Erfolg _______. ", english: "We would like to congratulate you on your success.", answer: "gratulieren" },
+            { german: "Ich möchte Ihnen für Ihre Hilfe _______. ", english: "I would like to thank you for your help.", answer: "danken" },
+            { german: "Er _______ sich für die Verspätung.", english: "He apologizes for the delay.", answer: "entschuldigt" }, // Conjugated, reflexive
+            { german: "Ich _______ Sie um einen Moment Geduld.", english: "I ask you for a moment of patience.", answer: "bitte" }, // Conjugated (formal)
+            { german: "Die Polizei _______ vor Taschendieben.", english: "The police warn about pickpockets.", answer: "warnt" }, // Conjugated
+            { german: "Kannst du mich _______, die Blumen zu gießen?", english: "Can you remind me to water the flowers?", answer: "erinnern" },
+            { german: "Ich ______ oft meinen Schlüssel.", english: "I often forget my key.", answer: "vergesse" }, // Conjugated (strong verb)
+            { german: "Sie _______ nach ihrer verlorenen Katze.", english: "She is looking for her lost cat.", answer: "sucht" }, // Conjugated
+            { german: "Wir _______ auf den Bus.", english: "We are waiting for the bus.", answer: "warten" }
+        ];
+
+
+        // --- State Variables ---
+        // Adapted from practice_pronouns.txt
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let mistakes = [];
+        let totalQuestions = 0;
+        let quizActive = false;
+
+        // --- DOM Elements ---
+        // Adapted from practice_pronouns.txt
+        const startScreenDiv = document.getElementById('start-screen');
+        const quizAreaDiv = document.getElementById('quiz-area');
+        const resultsAreaDiv = document.getElementById('results-area');
+        const promptP = document.getElementById('prompt');
+        const hintP = document.getElementById('hint');
+        const userAnswerInput = document.getElementById('user-answer');
+        const feedbackP = document.getElementById('feedback');
+        const questionCounterP = document.getElementById('question-counter');
+        const finalScoreP = document.getElementById('final-score');
+        const percentageP = document.getElementById('percentage');
+        const mistakesListUl = document.getElementById('mistakes-list');
+        const mistakesContainerDiv = document.getElementById('mistakes-container');
+        const noMistakesP = document.getElementById('no-mistakes');
+        const quizTitleH2 = document.getElementById('quiz-title');
+        const submitButton = document.getElementById('submit-answer');
+
+        // --- Helper Functions ---
+
+        // Fisher-Yates Shuffle - From practice_pronouns.txt
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Display element helper - From practice_pronouns.txt
+        function displayElement(element, show) {
+            element.style.display = show ? 'block' : 'none';
+        }
+
+        // Normalize answer (case/umlaut/eszett insensitive)
+        function normalizeString(str) {
+            return str.toLowerCase()
+                      .replace(/ä/g, 'ae')
+                      .replace(/ö/g, 'oe')
+                      .replace(/ü/g, 'ue')
+                      .replace(/ß/g, 'ss');
+        }
+
+        // --- Core Functions ---
+
+        function startQuiz() {
+            // Adapted from practice_pronouns.txt 'startQuiz'
+            currentQuestions = [...quizQuestions]; // Copy questions
+            shuffleArray(currentQuestions);
+            currentQuestions = currentQuestions.slice(0, 30);
+            totalQuestions = currentQuestions.length;
+
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            mistakes = [];
+            quizActive = true;
+
+            // Update UI
+            displayElement(startScreenDiv, false);
+            displayElement(resultsAreaDiv, false);
+            displayElement(quizAreaDiv, true);
+            feedbackP.textContent = '';
+            feedbackP.className = '';
+
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+             // Adapted from practice_pronouns.txt 'displayQuestion'
+             if (!quizActive) return;
+
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const currentQ = currentQuestions[currentQuestionIndex];
+
+            // Display German sentence with a blank
+            promptP.innerHTML = currentQ.german.replace('___', '<span class="blank">_____</span>');
+            hintP.textContent = `Hint: ${currentQ.english}`; // Display English hint
+
+             // Store normalized correct answer for comparison
+             userAnswerInput.dataset.correctAnswer = normalizeString(currentQ.answer);
+             // Store original German sentence and correct answer for results display
+             userAnswerInput.dataset.originalGerman = currentQ.german;
+             userAnswerInput.dataset.originalAnswer = currentQ.answer;
+
+
+            questionCounterP.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+            userAnswerInput.value = '';
+            feedbackP.textContent = '';
+            feedbackP.className = '';
+            userAnswerInput.disabled = false;
+            submitButton.disabled = false;
+            userAnswerInput.focus();
+        }
+
+        function checkAnswer() {
+             // Adapted from practice_pronouns.txt 'checkAnswer'
+            if (!quizActive) return;
+
+            const userAnswerRaw = userAnswerInput.value.trim();
+            const userAnswerNormalized = normalizeString(userAnswerRaw);
+            const correctAnswerNormalized = userAnswerInput.dataset.correctAnswer;
+            const originalGerman = userAnswerInput.dataset.originalGerman;
+            const originalAnswer = userAnswerInput.dataset.originalAnswer;
+
+
+            userAnswerInput.disabled = true;
+            submitButton.disabled = true;
+
+            if (userAnswerNormalized === correctAnswerNormalized) {
+                score++;
+                feedbackP.textContent = 'Correct!';
+                feedbackP.className = 'correct';
+            } else {
+                feedbackP.innerHTML = `Incorrect. The correct answer was: <span class="correct-ans-inline">${originalAnswer}</span>`; // Show original answer format
+                feedbackP.className = 'incorrect';
+                mistakes.push({
+                    sentence: originalGerman,
+                    user_answer: userAnswerRaw || "[No Answer]", // Use raw answer here
+                    correct_answer: originalAnswer // Use original answer here
+                });
+            }
+
+            currentQuestionIndex++;
+            setTimeout(() => {
+                 if (quizActive) {
+                     displayQuestion();
+                 }
+            }, userAnswerNormalized === correctAnswerNormalized ? 800 : 2000); // Longer delay for incorrect answers
+        }
+
+        function showResults() {
+             // Adapted from practice_pronouns.txt 'showResults'
+             quizActive = false;
+            const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(1) : 0;
+
+            finalScoreP.textContent = `Your final score: ${score} out of ${totalQuestions}`;
+            percentageP.textContent = `That's ${percentage}% correct.`;
+
+            mistakesListUl.innerHTML = '';
+            if (mistakes.length === 0) {
+                displayElement(mistakesContainerDiv, false);
+                displayElement(noMistakesP, true);
+            } else {
+                displayElement(mistakesContainerDiv, true);
+                displayElement(noMistakesP, false);
+                mistakes.forEach(m => {
+                    const li = document.createElement('li');
+                    // Display the sentence with the blank, the user's wrong answer, and the correct answer.
+                     const sentenceWithBlank = m.sentence.replace('___', '_____');
+                     li.innerHTML = `
+                        <span class="sentence">Sentence: ${sentenceWithBlank}</span>
+                        Your Answer: <span class="user-ans">${m.user_answer}</span><br>
+                        Correct Answer: <span class="correct-ans">${m.correct_answer}</span>
+                    `;
+                    mistakesListUl.appendChild(li);
+                });
+            }
+
+            displayElement(quizAreaDiv, false);
+            displayElement(resultsAreaDiv, true);
+        }
+
+         function resetQuiz() {
+             // Adapted from practice_pronouns.txt 'resetQuiz'
+             quizActive = false;
+             // Reset state variables just in case
+             currentQuestions = [];
+             currentQuestionIndex = 0;
+             score = 0;
+             mistakes = [];
+             totalQuestions = 0;
+
+             // Reset UI elements
+             userAnswerInput.value = '';
+             feedbackP.textContent = '';
+             feedbackP.className = '';
+             questionCounterP.textContent = '';
+             promptP.innerHTML = '';
+             hintP.textContent = '';
+             userAnswerInput.disabled = false;
+             submitButton.disabled = false;
+
+             // Go back to start screen
+             displayElement(quizAreaDiv, false);
+             displayElement(resultsAreaDiv, false);
+             displayElement(startScreenDiv, true);
+         }
+
+        // Event Listener for Enter Key - From practice_pronouns.txt
+        userAnswerInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && quizActive && !userAnswerInput.disabled) {
+                event.preventDefault();
+                checkAnswer();
+            }
+        });
+
+    </script>
+</body>
+</html>
