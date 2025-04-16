@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Practice Quizzes</title>
+    <style>
+        /* Basic styling - adapted slightly from provided files */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --bg-color: #eef2f7;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 700px; /* Slightly wider for the list */
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5em;
+             margin-top: 0;
+        }
+
+        #quiz-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #quiz-list li {
+            background-color: var(--light-color);
+            border: 1px solid #e9ecef;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #quiz-list li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+
+        #quiz-list a {
+            display: block;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit; /* Inherit text color from parent */
+            text-align: left;
+        }
+
+        #quiz-list h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 0.5em;
+            font-size: 1.3em;
+        }
+
+        #quiz-list p {
+            color: var(--secondary-color);
+            margin-bottom: 0;
+            font-size: 0.95em;
+        }
+
+         /* Basic responsiveness */
+         @media (max-width: 600px) {
+             body {
+                 padding: 10px;
+             }
+             #app {
+                 padding: 20px;
+             }
+              #quiz-list a {
+                padding: 15px;
+            }
+             #quiz-list h2 {
+                font-size: 1.15em;
+            }
+            #quiz-list p {
+                font-size: 0.9em;
+            }
+         }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>German Practice Quizzes</h1>
+
+        <ul id="quiz-list">
+            <!-- Quiz links will be inserted here by JavaScript -->
+        </ul>
+
+    </div>
+
+    <script>
+        // Define the quiz data here.
+        // To add a new quiz, just add a new object to this array.
+        // Ensure filenames are correct and these files are in the same directory as index.html
+        const quizzes = [
+    {
+        "filename": "practice_pronouns.html",
+        "title": "German Pronouns",
+        "description": "Practice personal, possessive, and reflexive pronouns in different cases."
+    },
+    {
+        "filename": "practice_adjective_declension.html",
+        "title": "German Adjective Declension",
+        "description": "Practice strong, weak, and mixed adjective declension in German."
+    },
+    {
+        "filename": "practice_verbs.html",
+        "title": "German Verbs - Present Tense",
+        "description": "Practice conjugating common German verbs in the present tense."
+    },
+    {
+        "filename": "practice_perfect_verbs.html",
+        "title": "German Verbs - Perfect Tense",
+        "description": "Practice conjugating common German verbs in the perfect tense."
+    },
+];
+
+        // Get the list element
+        const quizList = document.getElementById('quiz-list');
+
+        // Function to create and append list items
+        function displayQuizzes() {
+            quizList.innerHTML = ''; // Clear existing list items (if any)
+
+            quizzes.forEach(quiz => {
+                const listItem = document.createElement('li');
+
+                // Sanitize potentially unsafe characters in title/description for direct HTML insertion
+                // (A more robust solution might use DOM methods like textContent)
+                const safeTitle = quiz.title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                const safeDescription = quiz.description.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+                listItem.innerHTML = `
+                    <a href="${quiz.filename}">
+                        <h2>${safeTitle}</h2>
+                        <p>${safeDescription}</p>
+                    </a>
+                `;
+                quizList.appendChild(listItem);
+            });
+        }
+
+        // Initial display of quizzes when the page loads
+        displayQuizzes();
+    </script>
+
+</body>
+</html>

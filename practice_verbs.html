@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>German A2+ Word Practice</title>
+    <title>German Verbs in the Present Tense</title>
     <style>
         /* CSS Styles from practice_pronouns.txt*/
         :root {
@@ -192,15 +192,15 @@
 </head>
 <body>
     <div id="app">
-        <h1>Verb Practice</h1>
-        <p>Fill in the blank with the correct German word. Case and umlauts (ä/ö/ü/ß) don't matter.</p>
+        <h1>German Verbs in the Present Tense</h1>
+        <p>Fill in the blank with the correct German verb.<br>Contains 500 most common German verbs.</p>
 
         <div id="start-screen">
-             <button onclick="startQuiz()">Start Quiz (30 Questions)</button>
+             <button onclick="startQuiz()">Start Quiz</button>
         </div>
+            <p style="font-size: 0.8em; color: var(--secondary-color);">Each quiz round selects 50 questions randomly.</p>
 
         <div id="quiz-area" style="display: none;">
-            <h2 id="quiz-title">Action, Emotion & Interaction Verbs</h2>
             <p id="question-counter"></p>
             <p id="prompt"></p>
             <p id="hint"></p>
@@ -226,90 +226,510 @@
     <script>
         // --- Data ---
 const quizQuestions = [
-            // --- Original 30 ---
-            { german: "Wir müssen _______.", english: "We need to speak.", answer: "sprechen" },
-            { german: "Er ______ die Wahrheit.", english: "He says the truth.", answer: "sagt" }, // Conjugated
-            { german: "Ich _______ dir eine Geschichte.", english: "I'm telling you a story.", answer: "erzähle" }, // Conjugated
-            { german: "Sie _______ über das Ereignis.", english: "She reported about the event.", answer: "berichtete" }, // Past tense
-            { german: "Wir _______ über das Problem.", english: "We are discussing the problem.", answer: "diskutieren" },
-            { german: "Darf ich dich etwas ______?", english: "May I ask you something?", answer: "fragen" },
-            { german: "Er _______ nicht auf die Frage.", english: "He doesn't answer the question.", answer: "antwortet" }, // Conjugated
-            { german: "Können Sie mir bitte ______?", english: "Can you please help me?", answer: "helfen" },
-            { german: "Mein Bruder _______ bei einer Bank.", english: "My brother works at a bank.", answer: "arbeitet" }, // Conjugated
-            { german: "Wir _______ Deutsch zusammen.", english: "We learn German together.", answer: "lernen" },
-            { german: "Sie ______ gerne Bücher.", english: "She likes to read books.", answer: "liest" }, // Conjugated (strong verb)
-            { german: "Ich ______ einen Brief an meine Oma.", english: "I am writing a letter to my grandma.", answer: "schreibe" }, // Conjugated
-            { german: "Wir _______ uns morgen im Café.", english: "We are meeting tomorrow in the café.", answer: "treffen" },
-            { german: "Ich kann dich nicht _______. ", english: "I cannot understand you.", answer: "verstehen" },
-            { german: "Der Lehrer _______ die Grammatik.", english: "The teacher explains the grammar.", answer: "erklärt" }, // Conjugated
-            { german: "Ich _______ vor, ins Kino zu gehen.", english: "I suggest going to the cinema.", answer: "schlage" }, // Separable verb part
-            { german: "Wir müssen uns _______, was wir tun.", english: "We have to decide what we do.", answer: "entscheiden" },
-            { german: "Möchtest du am Kurs _______?", english: "Would you like to participate in the course?", answer: "teilnehmen" }, // Separable verb
-            { german: "Sie _______ sich auf die Prüfung vor.", english: "She prepares for the exam.", answer: "bereitet" }, // Separable verb part
-            { german: "Er _______, das Problem zu lösen.", english: "He tries to solve the problem.", answer: "versucht" }, // Conjugated
-            { german: "Die Freunde ______ über den Witz.", english: "The friends are laughing at the joke.", answer: "lachen" },
-            { german: "Das Baby beginnt zu ______.", english: "The baby starts to cry.", answer: "weinen" },
-            { german: "Wir ______ uns auf das Wochenende.", english: "We are looking forward to the weekend.", answer: "freuen" }, // Reflexive verb part
-            { german: "Ich ______ mich über den Stau.", english: "I'm annoyed about the traffic jam.", answer: "ärgere" }, // Reflexive verb part
-            { german: "In der neuen Stadt ______ sie sich einsam.", english: "She feels lonely in the new city.", answer: "fühlt" }, // Conjugated
-            { german: "Er sagt, dass er sie ______. ", english: "He says that he loves her.", answer: "liebt" }, // Conjugated
-            { german: "Sie ______ es, früh aufzustehen.", english: "She hates getting up early.", answer: "hasst" }, // Conjugated
-            { german: "Wir ______ auf besseres Wetter.", english: "We hope for better weather.", answer: "hoffen" },
-            { german: "Das Kind ______ sich vor dem Hund.", english: "The child is afraid of the dog.", answer: "fürchtet" }, // Reflexive verb part
-            { german: "Ich ______ mich über seine Reaktion.", english: "I wonder about/am surprised by his reaction.", answer: "wundere" }, // Reflexive verb part
-
-            // --- New 50 ---
-            { german: "Wir _______ unsere Großeltern am Wochenende.", english: "We visit our grandparents on the weekend.", answer: "besuchen" },
-            { german: "Ich möchte dich zu meiner Party _______. ", english: "I want to invite you to my party.", answer: "einladen" },
-            { german: "Können wir noch einen Kaffee _______?", english: "Can we order another coffee?", answer: "bestellen" },
-            { german: "Wer _______ die Rechnung?", english: "Who pays the bill?", answer: "bezahlt" }, // Conjugated
-            { german: "Sie _______ ein neues Kleid im Geschäft.", english: "She buys a new dress in the store.", answer: "kauft" }, // Conjugated
-            { german: "Er _______ sein altes Auto.", english: "He is selling his old car.", answer: "verkauft" }, // Conjugated
-            { german: "Wir _______ eine Wohnung in der Stadt.", english: "We rent an apartment in the city.", answer: "mieten" },
-            { german: "Kannst du bitte das Fenster _______?", english: "Can you please open the window?", answer: "öffnen" },
-            { german: "Er _______ die Tür leise hinter sich.", english: "He closes the door quietly behind him.", answer: "schließt" }, // Conjugated (with ß)
-            { german: "Der Film _______ um 20 Uhr an.", english: "The movie starts at 8 PM.", answer: "fängt" }, // Conjugated, separable
-            { german: "Es _______ auf zu regnen.", english: "It stops raining.", answer: "hört" }, // Conjugated, separable
-            { german: "Können Sie mir den Weg zum Bahnhof _______?", english: "Can you show me the way to the train station?", answer: "zeigen" },
-            { german: "Er _______ einen schweren Rucksack.", english: "He is carrying a heavy backpack.", answer: "trägt" }, // Conjugated (strong verb)
-            { german: "Ich möchte deine Freunde _______. ", english: "I would like to get to know your friends.", answer: "kennenlernen" },
-            { german: "Könnten Sie das bitte _______?", english: "Could you please repeat that?", answer: "wiederholen" },
-            { german: "Welches Restaurant können Sie _______?", english: "Which restaurant can you recommend?", answer: "empfehlen" }, // Strong verb
-            { german: "Du musst mir _______, vorsichtig zu sein.", english: "You have to promise me to be careful.", answer: "versprechen" }, // Strong verb
-            { german: "Meine Eltern _______ mir nicht, spät auszugehen.", english: "My parents don't allow me to go out late.", answer: "erlauben" },
-            { german: "Der Arzt _______ ihm das Rauchen.", english: "The doctor forbids him to smoke.", answer: "verbietet" }, // Conjugated (strong verb)
-            { german: "Darf ich dein Telefon _______?", english: "May I use your phone?", answer: "benutzen" },
-            { german: "Ich muss Geld _______. ", english: "I need to change money.", answer: "wechseln" },
-            { german: "Kannst du mein Fahrrad _______?", english: "Can you repair my bike?", answer: "reparieren" },
-            { german: "Sie _______ eine große Konferenz.", english: "She is organizing a big conference.", answer: "organisiert" }, // Conjugated
-            { german: "Wir _______ unseren Urlaub für den Sommer.", english: "We are planning our vacation for the summer.", answer: "planen" },
-            { german: "Kannst du mich vom Bahnhof _______?", english: "Can you pick me up from the train station?", answer: "abholen" }, // Separable verb
-            { german: "Soll ich etwas zum Essen _______?", english: "Should I bring something to eat along?", answer: "mitbringen" }, // Separable verb
-            { german: "Ich werde dich später _______. ", english: "I will call you later.", answer: "anrufen" }, // Separable verb
-            { german: "Die Kinder müssen ihr Zimmer _______. ", english: "The children have to tidy up their room.", answer: "aufräumen" }, // Separable verb
-            { german: "Wir _______ die Wohnung jeden Samstag.", english: "We clean the apartment every Saturday.", answer: "putzen" },
-            { german: "Was _______ du heute Abend?", english: "What are you cooking tonight?", answer: "kochst" }, // Conjugated
-            { german: "Sie _______ einen Kuchen zum Geburtstag.", english: "She is baking a cake for the birthday.", answer: "bäckt" }, // Conjugated (strong verb)
-            { german: "Er _______ seine Nachbarn freundlich.", english: "He greets his neighbors friendly.", answer: "grüßt" }, // Conjugated (with ß)
-            { german: "Wir müssen uns jetzt leider _______. ", english: "Unfortunately, we have to say goodbye now.", answer: "verabschieden" }, // Reflexive verb
-            { german: "Sie _______ sich lange über ihre Reise.", english: "They chatted for a long time about their trip.", answer: "unterhielten" }, // Past tense, reflexive
-            { german: "Die Geschwister _______ oft über Kleinigkeiten.", english: "The siblings often argue about small things.", answer: "streiten" },
-            { german: "Kannst du diesen Satz ins Englische _______?", english: "Can you translate this sentence into English?", answer: "übersetzen" },
-            { german: "Ich _______, dass es morgen regnen wird.", english: "I believe that it will rain tomorrow.", answer: "glaube" }, // Conjugated
-            { german: "_______ du, wie spät es ist?", english: "Do you know what time it is?", answer: "Weißt" }, // Conjugated (strong verb)
-            { german: "_______ Sie dieses Lied?", english: "Do you know this song?", answer: "Kennen" }, // Conjugated (formal)
-            { german: "Was _______ Sie dazu?", english: "What do you mean by that? / What's your opinion on that?", answer: "meinen" }, // Conjugated (formal)
-            { german: "Ich _______ dir alles Gute zum Geburtstag.", english: "I wish you all the best for your birthday.", answer: "wünsche" }, // Conjugated
-            { german: "Wir möchten dir zum Erfolg _______. ", english: "We would like to congratulate you on your success.", answer: "gratulieren" },
-            { german: "Ich möchte Ihnen für Ihre Hilfe _______. ", english: "I would like to thank you for your help.", answer: "danken" },
-            { german: "Er _______ sich für die Verspätung.", english: "He apologizes for the delay.", answer: "entschuldigt" }, // Conjugated, reflexive
-            { german: "Ich _______ Sie um einen Moment Geduld.", english: "I ask you for a moment of patience.", answer: "bitte" }, // Conjugated (formal)
-            { german: "Die Polizei _______ vor Taschendieben.", english: "The police warn about pickpockets.", answer: "warnt" }, // Conjugated
-            { german: "Kannst du mich _______, die Blumen zu gießen?", english: "Can you remind me to water the flowers?", answer: "erinnern" },
-            { german: "Ich ______ oft meinen Schlüssel.", english: "I often forget my key.", answer: "vergesse" }, // Conjugated (strong verb)
-            { german: "Sie _______ nach ihrer verlorenen Katze.", english: "She is looking for her lost cat.", answer: "sucht" }, // Conjugated
-            { german: "Wir _______ auf den Bus.", english: "We are waiting for the bus.", answer: "warten" }
-        ];
+    // 500 questions
+    { german: "Ich <missing> müde.", english: "I am tired.", answer: "bin" },
+    { german: "Du <missing> ein Auto.", english: "You have a car.", answer: "hast" },
+    { german: "Er <missing> schwimmen.", english: "He can swim.", answer: "kann" },
+    { german: "Es <missing> spät.", english: "It is getting late.", answer: "wird" },
+    { german: "Wir <missing> die Antwort.", english: "We know the answer.", answer: "wissen" },
+    { german: "Ihr <missing> nach Hause gehen.", english: "You want to go home.", answer: "wollt" },
+    { german: "Sie <missing> jetzt arbeiten.", english: "They must work now.", answer: "müssen" },
+    { german: "Ich <missing> meine Hausaufgaben.", english: "I do my homework.", answer: "mache" },
+    { german: "Was <missing> du?", english: "What are you doing?", answer: "tust" },
+    { german: "Er <missing> die Wahrheit.", english: "He says the truth.", answer: "sagt" },
+    { german: "Wir <missing> zur Schule.", english: "We go to school.", answer: "gehen" },
+    { german: "Ich <missing> einen Vogel.", english: "I see a bird.", answer: "sehe" },
+    { german: "Du <missing> mir das Buch.", english: "You give me the book.", answer: "gibst" },
+    { german: "Man <missing> höflich sein.", english: "One should be polite.", answer: "soll" },
+    { german: "Was <missing> er damit?", english: "What does he mean by that?", answer: "meint" },
+    { german: "Sie <missing> morgen.", english: "She is coming tomorrow.", answer: "kommt" },
+    { german: "Er <missing> das Fenster offen.", english: "He leaves the window open.", answer: "lässt" },
+    { german: "Ich <missing> an Wunder.", english: "I believe in miracles.", answer: "glaube" },
+    { german: "Was <missing> hier?", english: "What is happening here?", answer: "passiert" },
+    { german: "Wir <missing> über das Wetter.", english: "We talk about the weather.", answer: "reden" },
+    { german: "Ich <missing> Schokolade.", english: "I like chocolate.", answer: "mag" },
+    { german: "Du <missing> Musik.", english: "You hear music.", answer: "hörst" },
+    { german: "Er <missing> mir.", english: "He helps me.", answer: "hilft" },
+    { german: "Sie <missing> ihre Schlüssel nicht.", english: "She doesn't find her keys.", answer: "findet" },
+    { german: "Wir <missing> zu Hause.", english: "We stay at home.", answer: "bleiben" },
+    { german: "Ich <missing> Hilfe.", english: "I need help.", answer: "brauche" },
+    { german: "Ihr <missing> eure Eltern.", english: "You love your parents.", answer: "liebt" },
+    { german: "Er <missing> Blumen mit.", english: "He brings flowers.", answer: "bringt" },
+    { german: "Das Auto <missing> dort.", english: "The car stands there.", answer: "steht" },
+    { german: "Wie <missing> du?", english: "What is your name?", answer: "heißt" },
+    { german: "Ich <missing> den Bus.", english: "I take the bus.", answer: "nehme" },
+    { german: "Wir <missing> Deutsch.", english: "We speak German.", answer: "sprechen" },
+    { german: "Die Pflanze <missing> ohne Wasser.", english: "The plant dies without water.", answer: "stirbt" },
+    { german: "Er <missing> die Fliege.", english: "He kills the fly.", answer: "tötet" },
+    { german: "Du <missing> ein Geschenk.", english: "You receive a gift.", answer: "bekommst" },
+    { german: "Ich <missing> oft meinen Schirm.", english: "I often forget my umbrella.", answer: "vergesse" },
+    { german: "Sie <missing> ihr Versprechen.", english: "She keeps her promise.", answer: "hält" },
+    { german: "Wir <missing> auf den Zug.", english: "We wait for the train.", answer: "warten" },
+    { german: "Ich <missing> diesen Mann.", english: "I know this man.", answer: "kenne" },
+    { german: "Er <missing> die Frage nicht.", english: "He doesn't understand the question.", answer: "versteht" },
+    { german: "Was <missing> du?", english: "What are you thinking?", answer: "denkst" },
+    { german: "Meine Oma <missing> noch.", english: "My grandma is still alive.", answer: "lebt" },
+    { german: "Das <missing> nicht.", english: "That's not right.", answer: "stimmt" },
+    { german: "Er <missing> immer seine Schlüssel.", english: "He always loses his keys.", answer: "verliert" },
+    { german: "Man <missing> hier nicht rauchen.", english: "You are not allowed to smoke here.", answer: "darf" },
+    { german: "Ich <missing> bei einer Bank.", english: "I work at a bank.", answer: "arbeite" },
+    { german: "Was <missing> du gerne?", english: "What do you like to eat?", answer: "isst" },
+    { german: "Die Kinder <missing> im Garten.", english: "The children play in the garden.", answer: "spielen" },
+    { german: "Das Buch <missing> auf dem Tisch.", english: "The book lies on the table.", answer: "liegt" },
+    { german: "Wir <missing> nach Italien.", english: "We drive to Italy.", answer: "fahren" },
+    { german: "Ich <missing> es noch einmal.", english: "I try it one more time.", answer: "versuche" },
+    { german: "Er <missing> eine Geschichte.", english: "He tells a story.", answer: "erzählt" },
+    { german: "Was <missing> dieses Wort?", english: "What does this word mean?", answer: "bedeutet" },
+    { german: "Ich <missing> nach dem Weg.", english: "I ask for the way.", answer: "frage" },
+    { german: "Wer <missing> die Regeln?", english: "Who determines the rules?", answer: "bestimmt" },
+    { german: "Ich <missing> meine Freunde im Café.", english: "I meet my friends in the café.", answer: "treffe" },
+    { german: "Wir <missing> auf gutes Wetter.", english: "We hope for good weather.", answer: "hoffen" },
+    { german: "Du <missing> deine Brille.", english: "You are looking for your glasses.", answer: "suchst" },
+    { german: "Er <missing> seine Familie.", english: "He leaves his family.", answer: "verlässt" },
+    { german: "Sie <missing> mir das Foto.", english: "She shows me the photo.", answer: "zeigt" },
+    { german: "Ich <missing> Kopfschmerzen.", english: "I'm getting a headache.", answer: "kriege" },
+    { german: "Kannst du bitte Milch <missing>?", english: "Can you please get milk?", answer: "holen" },
+    { german: "Das Kleid <missing> dir gut.", english: "The dress suits you well.", answer: "gefällt" },
+    { german: "Der Hund <missing> das Kind.", english: "The dog saves the child.", answer: "rettet" },
+    { german: "Die Sonne <missing>.", english: "The sun shines.", answer: "scheint" },
+    { german: "Das Baby <missing> ruhig.", english: "The baby sleeps peacefully.", answer: "schläft" },
+    { german: "Wir <missing> für die Prüfung.", english: "We are learning for the exam.", answer: "lernen" },
+    { german: "Ich <missing> gerne Kaffee.", english: "I like to drink coffee.", answer: "trinke" },
+    { german: "Wir <missing> das zusammen!", english: "We can do this together!", answer: "schaffen" },
+    { german: "Der Computer <missing> nicht.", english: "The computer doesn't work.", answer: "funktioniert" },
+    { german: "Mein Kopf <missing> <missing>.", english: "My head hurts.", answer: "tut weh" },
+    { german: "Ich <missing> die Vase auf den Tisch.", english: "I place the vase on the table.", answer: "stelle" },
+    { german: "Wie <missing> man das auf Deutsch?", english: "How do you call that in German?", answer: "nennt" },
+    { german: "Er <missing> schnell.", english: "He runs fast.", answer: "läuft" },
+    { german: "Ich <missing> mich gut.", english: "I feel good.", answer: "fühle" },
+    { german: "Wir <missing> uns an den Urlaub.", english: "We remember the vacation.", answer: "erinnern" },
+    { german: "Sie <missing> für ihre Rechte.", english: "They fight for their rights.", answer: "kämpfen" },
+    { german: "Mein Bruder <missing> nächstes Jahr.", english: "My brother is getting married next year.", answer: "heiratet" },
+    { german: "Der Lehrer <missing> die Regel.", english: "The teacher explains the rule.", answer: "erklärt" },
+    { german: "Wo <missing> du?", english: "Where are you sitting?", answer: "sitzt" },
+    { german: "Sie <missing> eine schwere Tasche.", english: "She carries a heavy bag.", answer: "trägt" },
+    { german: "Ich <missing> ein neues Buch.", english: "I buy a new book.", answer: "kaufe" },
+    { german: "Er <missing> Spinnen.", english: "He hates spiders.", answer: "hasst" },
+    { german: "Er <missing> ihn <missing>.", english: "He kills him.", answer: "bringt um" },
+    { german: "Sie <missing> sich um ihre kranke Mutter.", english: "She takes care of her sick mother.", answer: "kümmert" },
+    { german: "Ich <missing> mich am Knie.", english: "I hurt my knee.", answer: "verletze" },
+    { german: "Das <missing> mich nicht.", english: "That doesn't interest me.", answer: "interessiert" },
+    { german: "Der Hund <missing> am Seil.", english: "The dog pulls on the rope.", answer: "zieht" },
+    { german: "Ich <missing> dich später <missing>.", english: "I'll call you later.", answer: "rufe an" },
+    { german: "Bitte <missing> mit dem Rauchen <missing>.", english: "Please stop smoking.", answer: "hör auf" },
+    { german: "Kannst du dir das <missing>?", english: "Can you imagine that?", answer: "vorstellen" },
+    { german: "Der Magier <missing> plötzlich.", english: "The magician suddenly disappears.", answer: "verschwindet" },
+    { german: "Was <missing> du von mir?", english: "What do you expect from me?", answer: "erwartest" },
+    { german: "Der Kapitän <missing> das Schiff.", english: "The captain steers the ship.", answer: "führt" },
+    { german: "Der Film <missing> um 20 Uhr <missing>.", english: "The movie starts at 8 PM.", answer: "fängt an" },
+    { german: "Was <missing> hier?", english: "What is happening here?", answer: "geschieht" },
+    { german: "Unsere Mannschaft <missing> das Spiel.", english: "Our team wins the game.", answer: "gewinnt" },
+    { german: "Das Telefon <missing>.", english: "The phone rings.", answer: "klingt" },
+    { german: "Ich <missing> mich auf den Stuhl.", english: "I sit down on the chair.", answer: "setze" },
+    { german: "Wir <missing> das Internet für die Recherche.", english: "We use the internet for research.", answer: "benutzen" },
+    { german: "Der Apfel <missing> vom Baum.", english: "The apple falls from the tree.", answer: "fällt" },
+    { german: "Ich <missing> dir eine E-Mail.", english: "I'll send you an email.", answer: "schicke" },
+    { german: "Wir <missing> nach Spanien.", english: "We fly to Spain.", answer: "fliegen" },
+    { german: "Ich <missing> Neuigkeiten aus der Zeitung.", english: "I learn news from the newspaper.", answer: "erfahre" },
+    { german: "Er <missing> die Rechnung.", english: "He pays the bill.", answer: "bezahlt" },
+    { german: "Ich <missing> einen Brief.", english: "I write a letter.", answer: "schreibe" },
+    { german: "Ich <missing> sein Alter auf 30.", english: "I estimate his age to be 30.", answer: "schätze" },
+    { german: "Ich <missing> dich um einen Gefallen.", english: "I ask you for a favor.", answer: "bitte" },
+    { german: "Du <missing> gerne Bücher.", english: "You like to read books.", answer: "liest" },
+    { german: "Sie <missing> ihren alten Schmuck.", english: "She keeps her old jewelry.", answer: "behält" },
+    { german: "Er <missing> sein Auto.", english: "He sells his car.", answer: "verkauft" },
+    { german: "Sie <missing> viel Geld.", english: "She earns a lot of money.", answer: "verdient" },
+    { german: "Ich <missing> mir ein neues Fahrrad.", english: "I wish for a new bike.", answer: "wünsche" },
+    { german: "Sie <missing> ihn.", english: "She marries him.", answer: "verheiratet" },
+    { german: "Ich <missing> diesen Tag!", english: "I curse this day!", answer: "verdamme" },
+    { german: "Wo <missing> mein Schlüssel?", english: "Where is my key stuck?", answer: "steckt" },
+    { german: "Die Hose <missing> mir gut.", english: "The pants fit me well.", answer: "passt" },
+    { german: "Er <missing> den Nagel in die Wand.", english: "He hits the nail into the wall.", answer: "schlägt" },
+    { german: "Das Wetter <missing> sich ständig.", english: "The weather changes constantly.", answer: "verändert" },
+    { german: "Ich <missing> dir.", english: "I follow you.", answer: "folge" },
+    { german: "Er <missing> sich den Film <missing>.", english: "He watches the movie.", answer: "sieht an" },
+    { german: "Der Sturm <missing> das Haus.", english: "The storm destroys the house.", answer: "zerstört" },
+    { german: "Ich <missing> mich für die Verspätung.", english: "I apologize for the delay.", answer: "entschuldige" },
+    { german: "Der Jäger <missing> auf den Hirsch.", english: "The hunter shoots at the deer.", answer: "schießt" },
+    { german: "Die Mutter <missing> ihr Kind.", english: "The mother protects her child.", answer: "beschützt" },
+    { german: "Er <missing> Geld aus der Kasse.", english: "He steals money from the cash register.", answer: "stiehlt" },
+    { german: "Wir <missing> die Möbel.", english: "We move the furniture.", answer: "bewegen" },
+    { german: "Die Polizei <missing> den Dieb.", english: "The police catch the thief.", answer: "erwischt" },
+    { german: "Ich <missing> dir.", english: "I trust you.", answer: "vertraue" },
+    { german: "Wir <missing> unser Ziel.", english: "We reach our goal.", answer: "erreichen" },
+    { german: "Ich <missing> dir zu helfen.", english: "I promise to help you.", answer: "verspreche" },
+    { german: "Sie <missing> ihre Aufgaben schnell.", english: "She gets her tasks done quickly.", answer: "erledigt" },
+    { german: "Das Kind <missing> den Kreisel.", english: "The child spins the top.", answer: "dreht" },
+    { german: "Ich <missing> bei meiner Aussage.", english: "I swear by my statement.", answer: "schwöre" },
+    { german: "Du <missing> heute gut <missing>.", english: "You look good today.", answer: "siehst aus" },
+    { german: "Er <missing> sich in sie.", english: "He falls in love with her.", answer: "verliebt" },
+    { german: "Sie <missing> ein Geheimnis.", english: "She reveals a secret.", answer: "verrät" },
+    { german: "Sie <missing> ein Kind.", english: "She gives birth to a child.", answer: "gebärt" },
+    { german: "Die Polizei <missing> den Verkehr <missing>.", english: "The police stop the traffic.", answer: "hält auf" },
+    { german: "Der Film <missing> zwei Stunden.", english: "The movie lasts two hours.", answer: "dauert" },
+    { german: "Das Kind <missing> sich hinter dem Baum.", english: "The child hides behind the tree.", answer: "versteckt" },
+    { german: "Er <missing> den Ball.", english: "He catches the ball.", answer: "fängt" },
+    { german: "Womit <missing> du dich?", english: "What are you busy with?", answer: "beschäftigst" },
+    { german: "Wir <missing> gerne.", english: "We like to dance.", answer: "tanzen" },
+    { german: "Etwas <missing> hier.", english: "Something is missing here.", answer: "fehlt" },
+    { german: "Ich <missing> die Tür.", english: "I open the door.", answer: "öffne" },
+    { german: "Wir <missing> uns für dieses Hotel.", english: "We decide on this hotel.", answer: "entscheiden" },
+    { german: "Der Arzt <missing> den Tumor.", english: "The doctor removes the tumor.", answer: "entfernt" },
+    { german: "Das Buch <missing> mir.", english: "The book belongs to me.", answer: "gehört" },
+    { german: "Ich <missing> bar.", english: "I pay cash.", answer: "zahle" },
+    { german: "Sie <missing> das Baby ins Bett.", english: "She lays the baby in the bed.", answer: "legt" },
+    { german: "Er <missing> einen Brief.", english: "He receives a letter.", answer: "erhält" },
+    { german: "Ich <missing> für deine Sicherheit.", english: "I ensure your safety.", answer: "sorge" },
+    { german: "Wir <missing> aus dem Fenster.", english: "We look out the window.", answer: "schauen" },
+    { german: "Das Kind <missing> laut.", english: "The child laughs loudly.", answer: "lacht" },
+    { german: "Er <missing> seine Unschuld.", english: "He proves his innocence.", answer: "beweist" },
+    { german: "Wir <missing> <missing>, was passiert ist.", english: "We find out what happened.", answer: "finden heraus" },
+    { german: "Ich <missing> mich vor der Dunkelheit.", english: "I am afraid of the dark.", answer: "fürchte" },
+    { german: "Der Kurs <missing> nächste Woche.", english: "The course begins next week.", answer: "beginnt" },
+    { german: "Dein Geschenk <missing> mich.", english: "Your gift surprises me.", answer: "überrascht" },
+    { german: "Sie <missing> ein schönes Lied.", english: "She sings a beautiful song.", answer: "singt" },
+    { german: "Ich <missing> die Tickets.", english: "I'll get the tickets.", answer: "besorge" },
+    { german: "Wir <missing> unsere Großeltern.", english: "We visit our grandparents.", answer: "besuchen" },
+    { german: "Ich <missing> meine Meinung.", english: "I change my opinion.", answer: "ändere" },
+    { german: "Ich <missing> einen Regenschirm <missing>.", english: "I take an umbrella with me.", answer: "nehme mit" },
+    { german: "Er <missing> um Hilfe.", english: "He calls for help.", answer: "ruft" },
+    { german: "Das kann ich mir nicht <missing>.", english: "I can't afford that.", answer: "leisten" },
+    { german: "Der Gefangene <missing> aus dem Gefängnis.", english: "The prisoner escapes from prison.", answer: "entkommt" },
+    { german: "Ich <missing> meine Heimatstadt.", english: "I miss my hometown.", answer: "vermisse" },
+    { german: "Das Bild <missing> an der Wand.", english: "The picture hangs on the wall.", answer: "hängt" },
+    { german: "Du <missing> den Ball zu weit.", english: "You throw the ball too far.", answer: "wirfst" },
+    { german: "Er <missing> den Unfall.", english: "He survives the accident.", answer: "überlebt" },
+    { german: "Ich <missing>, dass es regnen wird.", english: "I bet that it will rain.", answer: "wette" },
+    { german: "Ich <missing> dich an deiner Stimme.", english: "I recognize you by your voice.", answer: "erkenne" },
+    { german: "Wo <missing> du?", english: "Where do you live?", answer: "wohnst" },
+    { german: "Langsam <missing> er vorwärts.", english: "Slowly he steps forward.", answer: "schreitet" },
+    { german: "Wir <missing> den Kuchen.", english: "We share the cake.", answer: "teilen" },
+    { german: "Der Soldat <missing> den Feind.", english: "The soldier shoots the enemy dead.", answer: "erschießt" },
+    { german: "Sie <missing> die Verantwortung.", english: "She takes over the responsibility.", answer: "übernimmt" },
+    { german: "Ich <missing> dir für deine Hilfe.", english: "I thank you for your help.", answer: "danke" },
+    { german: "Wir <missing> ein Haus.", english: "We build a house.", answer: "bauen" },
+    { german: "Der Regenschirm <missing> vor Regen.", english: "The umbrella protects from rain.", answer: "schützt" },
+    { german: "Der Vertrag <missing> morgen.", english: "The contract ends tomorrow.", answer: "beendet" },
+    { german: "Ich <missing> den Zug.", english: "I miss the train.", answer: "verpasse" },
+    { german: "Er <missing> meine Hand.", english: "He grasps my hand.", answer: "fasst" },
+    { german: "Die Polizei <missing> den Verdächtigen.", english: "The police arrest the suspect.", answer: "verhaftet" },
+    { german: "Wir <missing> Geburtstag.", english: "We celebrate a birthday.", answer: "feiern" },
+    { german: "Ich <missing> mich gerne mit Freunden.", english: "I like to chat with friends.", answer: "unterhalte" },
+    { german: "Du musst besser <missing>!", english: "You have to pay more attention!", answer: "aufpassen" },
+    { german: "Er <missing> Kuchen <missing>.", english: "He brings cake along.", answer: "bringt mit" },
+    { german: "Ich <missing> den Vorfall der Polizei.", english: "I report the incident to the police.", answer: "melde" },
+    { german: "Er <missing> die Prüfung.", english: "He passes the exam.", answer: "besteht" },
+    { german: "Wir <missing> unseren Urlaub.", english: "We plan our vacation.", answer: "planen" },
+    { german: "Er <missing> sich auf der Party.", english: "He gets drunk at the party.", answer: "betrinkt" },
+    { german: "Sie <missing> das Glas.", english: "She breaks the glass.", answer: "bricht" },
+    { german: "Was <missing> er dir <missing>?", english: "What did he do to you?", answer: "tut an" },
+    { german: "Willst du <missing>?", english: "Do you want to come along?", answer: "mitkommen" },
+    { german: "Ich <missing> über das Problem <missing>.", english: "I think about the problem.", answer: "denke nach" },
+    { german: "Der Täter <missing> sein Opfer.", english: "The perpetrator murders his victim.", answer: "ermordet" },
+    { german: "Er <missing> an einer Krankheit.", english: "He suffers from an illness.", answer: "leidet" },
+    { german: "Ich <missing> mich auf das Wochenende.", english: "I look forward to the weekend.", answer: "freue" },
+    { german: "Er <missing> die Hoffnung nicht <missing>.", english: "He doesn't give up hope.", answer: "gibt auf" },
+    { german: "Wir <missing> den Abend zusammen.", english: "We spend the evening together.", answer: "verbringen" },
+    { german: "Die Katze <missing> die Maus.", english: "The cat chases the mouse.", answer: "verfolgt" },
+    { german: "Ich <missing> einen Fehler.", english: "I notice a mistake.", answer: "bemerke" },
+    { german: "Bitte <missing> die Tür.", english: "Please close the door.", answer: "schließ" },
+    { german: "Das Baby <missing>.", english: "The baby cries.", answer: "weint" },
+    { german: "Sie <missing> ihn zum Abschied.", english: "She kisses him goodbye.", answer: "küsst" },
+    { german: "Der Arzt <missing> den Patienten.", english: "The doctor treats the patient.", answer: "behandelt" },
+    { german: "Kolumbus <missing> Amerika.", english: "Columbus discovers America.", answer: "entdeckt" },
+    { german: "Er <missing> auf die Bremse.", english: "He steps on the brake.", answer: "tritt" },
+    { german: "Die Adresse <missing> Hauptstraße 1.", english: "The address is Main Street 1.", answer: "lautet" },
+    { german: "Wir <missing> zur Party <missing>.", english: "We go to the party.", answer: "gehen hin" },
+    { german: "Der Chef <missing> den Mitarbeiter.", english: "The boss fires the employee.", answer: "feuert" },
+    { german: "Ich <missing> einen Stift.", english: "I need (use) a pen.", answer: "gebrauche" },
+    { german: "Wir müssen einen Unfall <missing>.", english: "We must prevent an accident.", answer: "verhindern" },
+    { german: "Er <missing> ein wichtiges Detail.", english: "He mentions an important detail.", answer: "erwähnt" },
+    { german: "Meine Eltern <missing> mir, auszugehen.", english: "My parents allow me to go out.", answer: "erlauben" },
+    { german: "Ich <missing> dich zum Essen <missing>.", english: "I invite you for dinner.", answer: "lade ein" },
+    { german: "Der Hund <missing> den Postboten <missing>.", english: "The dog attacks the mailman.", answer: "greift an" },
+    { german: "Er <missing> keine Ausnahmen <missing>.", english: "He allows no exceptions.", answer: "lässt zu" },
+    { german: "Du <missing> mich an.", english: "You lie to me.", answer: "lügst" },
+    { german: "Was <missing> du von mir?", english: "What do you demand from me?", answer: "verlangst" },
+    { german: "Ich <missing> das Rätsel.", english: "I solve the puzzle.", answer: "löse" },
+    { german: "Wir <missing> das Essen <missing>.", english: "We prepare the food.", answer: "bereiten vor" },
+    { german: "Der Lehrer <missing> die Hausaufgaben.", english: "The teacher checks the homework.", answer: "überprüft" },
+    { german: "Der Lärm <missing> mich.", english: "The noise disturbs me.", answer: "stört" },
+    { german: "Die Polizei <missing> die Geschwindigkeit.", english: "The police control the speed.", answer: "kontrolliert" },
+    { german: "Diese Regel <missing> für alle.", english: "This rule applies to everyone.", answer: "gilt" },
+    { german: "Wann <missing> du <missing>?", english: "When are you coming back?", answer: "kommst zurück" },
+    { german: "Er <missing> eine Nachricht.", english: "He leaves a message behind.", answer: "hinterlässt" },
+    { german: "Der Löwe <missing> das Zebra.", english: "The lion hunts the zebra.", answer: "jagt" },
+    { german: "Der Arbeitstag <missing> um 17 Uhr.", english: "The workday ends at 5 PM.", answer: "endet" },
+    { german: "Da <missing> du dich.", english: "You are mistaken there.", answer: "irrst" },
+    { german: "Ich <missing> mir deine Nummer.", english: "I'll note down your number.", answer: "merke" },
+    { german: "Ich <missing> dich vom Bahnhof <missing>.", english: "I'll pick you up from the train station.", answer: "hole ab" },
+    { german: "Das Auto <missing> an der Ampel.", english: "The car stops at the traffic light.", answer: "stoppt" },
+    { german: "Das Kind <missing> vor Angst.", english: "The child screams in fear.", answer: "schreit" },
+    { german: "Er <missing> mein Fahrrad.", english: "He steals (pinches) my bike.", answer: "klaut" },
+    { german: "Die Verbrecher <missing> das Kind.", english: "The criminals kidnap the child.", answer: "entführen" },
+    { german: "Ich <missing> mir das noch einmal.", english: "I'll think that over again.", answer: "überlege" },
+    { german: "Wir <missing> das Auto.", english: "We repair the car.", answer: "reparieren" },
+    { german: "Wir <missing> heute Abend <missing>.", english: "We are going out tonight.", answer: "gehen aus" },
+    { german: "Ich <missing> dich davon.", english: "I convince you of it.", answer: "überzeuge" },
+    { german: "Ein Kind <missing> langsam.", english: "A child grows up slowly.", answer: "erwächst" },
+    { german: "Ich <missing> dein Angebot <missing>.", english: "I accept your offer.", answer: "nehme an" },
+    { german: "Wir <missing> die Schafe.", english: "We count the sheep.", answer: "zählen" },
+    { german: "Ich <missing> dir deine Fehler.", english: "I forgive you your mistakes.", answer: "vergebe" },
+    { german: "Das Flugzeug <missing> sicher.", english: "The airplane lands safely.", answer: "landet" },
+    { german: "Sie <missing> das Paar.", english: "She separates the couple.", answer: "trennt" },
+    { german: "Ich <missing> die Punkte mit einer Linie.", english: "I connect the dots with a line.", answer: "verbinde" },
+    { german: "Das Kind <missing> vor Freude.", english: "The child jumps for joy.", answer: "springt" },
+    { german: "Sie <missing> vor dem Feuer.", english: "They flee from the fire.", answer: "fliehen" },
+    { german: "Der Musiker <missing> ein neues Lied <missing>.", english: "The musician records a new song.", answer: "nimmt auf" },
+    { german: "Der Sturm <missing> große Schäden.", english: "The storm causes great damage.", answer: "verursacht" },
+    { german: "Ich <missing> mich nicht, das zu sagen.", english: "I don't dare to say that.", answer: "traue" },
+    { german: "Hoffentlich <missing> es.", english: "Hopefully it works out.", answer: "klappt" },
+    { german: "Er <missing> geschickt das Hindernis.", english: "He skillfully bypasses the obstacle.", answer: "umgeht" },
+    { german: "Wir <missing> einen neuen Präsidenten.", english: "We elect a new president.", answer: "wählen" },
+    { german: "Glaubst du, dass Außerirdische <missing>?", english: "Do you believe that aliens exist?", answer: "existieren" },
+    { german: "Was <missing> du am Wochenende?", english: "What are you undertaking this weekend?", answer: "unternimmst" },
+    { german: "Das Hotel <missing> sich in der Nähe.", english: "The hotel is located nearby.", answer: "befindet" },
+    { german: "Wir müssen <missing>.", english: "We have to keep going.", answer: "weitermachen" },
+    { german: "Er <missing> zu viel.", english: "He smokes too much.", answer: "raucht" },
+    { german: "Warum <missing> du dich so <missing>?", english: "Why are you getting so upset?", answer: "regst auf" },
+    { german: "Der Chef <missing> den Mitarbeiter.", english: "The boss dismisses the employee.", answer: "entlässt" },
+    { german: "Die Firma <missing> neue Produkte.", english: "The company develops new products.", answer: "entwickelt" },
+    { german: "Der Detektiv <missing> den Verdächtigen.", english: "The detective observes the suspect.", answer: "beobachtet" },
+    { german: "Was <missing> du mir?", english: "What do you advise me?", answer: "rätst" },
+    { german: "Er <missing> in Schwierigkeiten.", english: "He gets into trouble.", answer: "gerät" },
+    { german: "Wir <missing> die Details morgen.", english: "We discuss the details tomorrow.", answer: "besprechen" },
+    { german: "Der Arzt <missing> ihm das Rauchen.", english: "The doctor forbids him to smoke.", answer: "verbietet" },
+    { german: "Das <missing> dich nichts <missing>.", english: "That is none of your business.", answer: "geht an" },
+    { german: "Ich <missing> das nicht.", english: "I don't get that.", answer: "kapiere" },
+    { german: "Sie <missing> den Schmerz.", english: "She endures the pain.", answer: "erträgt" },
+    { german: "Wir müssen uns <missing>.", english: "We have to hurry.", answer: "beeilen" },
+    { german: "Er will einfach nur <missing>.", english: "He just wants to run away.", answer: "abhauen" },
+    { german: "Ich <missing> die Tür <missing>.", english: "I lock the door.", answer: "schließe ab" },
+    { german: "Seine Antwort <missing> mich.", english: "His answer disappoints me.", answer: "enttäuscht" },
+    { german: "Im Sommer <missing> ich gerne.", english: "I like to swim in the summer.", answer: "schwimme" },
+    { german: "Die Suche <missing> kein Ergebnis.", english: "The search yields no result.", answer: "ergibt" },
+    { german: "Die Firma <missing> gute Arbeitsbedingungen.", english: "The company offers good working conditions.", answer: "bietet" },
+    { german: "Das Essen <missing> gut.", english: "The food tastes good.", answer: "schmeckt" },
+    { german: "Er <missing> sein ganzes Geld.", english: "He risks all his money.", answer: "riskiert" },
+    { german: "Bitte <missing> dich auf die Arbeit.", english: "Please concentrate on your work.", answer: "konzentriere" },
+    { german: "Er <missing> ihr die Blumen.", english: "He hands over the flowers to her.", answer: "übergibt" },
+    { german: "Die Soldaten <missing> die Gefangenen.", english: "The soldiers free the prisoners.", answer: "befreien" },
+    { german: "Das Rennen <missing> jetzt.", english: "The race starts now.", answer: "startet" },
+    { german: "Sie wollen den Feind <missing>.", english: "They want to annihilate the enemy.", answer: "vernichten" },
+    { german: "Er versucht, den Frieden zu <missing>.", english: "He tries to preserve the peace.", answer: "wahren" },
+    { german: "Ich <missing> eine Veränderung.", english: "I feel a change.", answer: "spüre" },
+    { german: "Das Problem <missing> uns alle.", english: "The problem concerns us all.", answer: "betrifft" },
+    { german: "Ich <missing> auf deine Frage.", english: "I answer your question.", answer: "antworte" },
+    { german: "Der Zug <missing> pünktlich <missing>.", english: "The train arrives on time.", answer: "kommt an" },
+    { german: "Ich <missing> dich nach Hause.", english: "I accompany you home.", answer: "begleite" },
+    { german: "Wir <missing> die Bedingungen.", english: "We accept the conditions.", answer: "akzeptieren" },
+    { german: "Der Preis <missing> ständig.", english: "The price rises constantly.", answer: "steigt" },
+    { german: "Dieser Brauch <missing> aus dem Mittelalter.", english: "This custom originates from the Middle Ages.", answer: "stammt" },
+    { german: "Du musst mir gut <missing>.", english: "You have to listen carefully to me.", answer: "zuhören" },
+    { german: "Ich <missing> ihm zufällig auf der Straße.", english: "I meet him by chance on the street.", answer: "begegne" },
+    { german: "Was <missing> du da?", english: "What are you looking at?", answer: "guckst" },
+    { german: "Das Feuer <missing> hell.", english: "The fire burns brightly.", answer: "brennt" },
+    { german: "Sie <missing> den Schatz im Garten.", english: "They bury the treasure in the garden.", answer: "begraben" },
+    { german: "Er <missing> ein Gesetz.", english: "He breaks a law.", answer: "verbricht" },
+    { german: "Sie <missing> das weinende Kind.", english: "She calms the crying child.", answer: "beruhigt" },
+    { german: "Ich <missing> heute Abend Nudeln.", english: "I am cooking pasta tonight.", answer: "koche" },
+    { german: "Wir <missing> eine Pizza.", english: "We order a pizza.", answer: "bestellen" },
+    { german: "Du <missing> alles!", english: "You ruin everything!", answer: "ruinierst" },
+    { german: "Was <missing> das?", english: "What does that cost?", answer: "kostet" },
+    { german: "Unsere Mannschaft <missing> den Gegner.", english: "Our team defeats the opponent.", answer: "besiegt" },
+    { german: "Das Telefon <missing> ständig.", english: "The phone rings constantly.", answer: "klingelt" },
+    { german: "Er <missing> den Sprung.", english: "He dares the jump.", answer: "wagt" },
+    { german: "Der Arzt <missing> den Patienten.", english: "The doctor examines the patient.", answer: "untersucht" },
+    { german: "Ich muss <missing>, wo er ist.", english: "I have to find out where he is.", answer: "rausfinden" },
+    { german: "Sie <missing> seinen Wunsch.", english: "She fulfills his wish.", answer: "erfüllt" },
+    { german: "Niemand <missing> mich dazu.", english: "Nobody forces me to do it.", answer: "zwingt" },
+    { german: "Er <missing> in seine Heimat <missing>.", english: "He returns to his homeland.", answer: "kehrt zurück" },
+    { german: "Ich <missing> den Fernsehsender.", english: "I change the TV channel.", answer: "wechsle" },
+    { german: "Wo <missing> du <missing>?", english: "Where do you come from?", answer: "kommst her" },
+    { german: "Das Medikament <missing> schnell.", english: "The medicine works quickly.", answer: "wirkt" },
+    { german: "Der Polizist <missing> den Dieb.", english: "The policeman grabs the thief.", answer: "schnappt" },
+    { german: "Ich <missing> jeden Morgen um 7 Uhr <missing>.", english: "I get up every morning at 7 AM.", answer: "stehe auf" },
+    { german: "Der Bus <missing> an der Haltestelle <missing>.", english: "The bus stops at the bus stop.", answer: "hält an" },
+    { german: "Die Kinder <missing> sich um das Spielzeug.", english: "The children argue over the toy.", answer: "streiten" },
+    { german: "Er <missing> tief durch.", english: "He breathes deeply.", answer: "atmet" },
+    { german: "Wir <missing> eine tolle Reise.", english: "We experience a great trip.", answer: "erleben" },
+    { german: "Sie <missing>, umzuziehen.", english: "She decides to move.", answer: "beschließt" },
+    { german: "Ich <missing> den Knopf.", english: "I press the button.", answer: "drücke" },
+    { german: "Wir <missing> den Urlaub.", english: "We enjoy the vacation.", answer: "genießen" },
+    { german: "Deine Leistung <missing> mich.", english: "Your performance impresses me.", answer: "beeindruckt" },
+    { german: "Ich <missing> von einer Strafe <missing>.", english: "I refrain from a punishment.", answer: "sehe ab" },
+    { german: "Wir <missing> dem Spiel gespannt <missing>.", english: "We watch the game intently.", answer: "sehen zu" },
+    { german: "Er <missing> seine Frau.", english: "He cheats on his wife.", answer: "betrügt" },
+    { german: "Die Wunde <missing> langsam.", english: "The wound heals slowly.", answer: "heilt" },
+    { german: "Bitte <missing> Sie hier.", english: "Please sign here.", answer: "unterschreiben" },
+    { german: "Wer <missing> das Telefon?", english: "Who invented the telephone?", answer: "erfand" }, // Using past tense here for a natural sentence
+    // Let's switch back to present:
+    { german: "Ich <missing> eine Lösung.", english: "I invent a solution.", answer: "erfinde" },
+    { german: "Wie <missing> wir hier <missing>?", english: "How do we get out of here?", answer: "kommen raus" },
+    { german: "Er <missing> mich nicht.", english: "He doesn't give a fuck about me.", answer: "fickt" }, // Vulgar, included as it's in the list
+    { german: "Ich <missing> dich vor der Gefahr.", english: "I warn you about the danger.", answer: "warne" },
+    { german: "Sie <missing>, unschuldig zu sein.", english: "She claims to be innocent.", answer: "behauptet" },
+    { german: "Sein Verhalten <missing> mir <missing>.", english: "His behavior strikes me as odd.", answer: "fällt auf" },
+    { german: "Das Pferd <missing> über die Wiese.", english: "The horse runs across the meadow.", answer: "rennt" },
+    { german: "Sie <missing> jeden Abend.", english: "She prays every evening.", answer: "betet" },
+    { german: "Der Wind <missing> die Blätter weg.", english: "The wind blows the leaves away.", answer: "treibt" },
+    { german: "Ich <missing> dich bei deinem Projekt.", english: "I support you with your project.", answer: "unterstütze" },
+    { german: "Ich <missing> meine alten Kleider <missing>.", english: "I get rid of my old clothes.", answer: "werde los" },
+    { german: "Ich <missing> von einem Urlaub.", english: "I dream of a vacation.", answer: "träume" },
+    { german: "Wir <missing> unsere Gäste herzlich.", english: "We receive our guests warmly.", answer: "empfangen" },
+    { german: "Ich hoffe, wir <missing> uns bald <missing>.", english: "I hope we see each other again soon.", answer: "sehen wieder" },
+    { german: "Wir <missing> gerne.", english: "We like to travel.", answer: "reisen" },
+    { german: "Ich <missing> meinen Koffer.", english: "I pack my suitcase.", answer: "packe" },
+    { german: "Seine Anwesenheit <missing> uns.", english: "His presence pleases us.", answer: "erfreut" },
+    { german: "Können Sie das bitte <missing>?", english: "Can you please confirm that?", answer: "bestätigen" },
+    { german: "Darf ich das <missing>?", english: "May I touch that?", answer: "anfassen" },
+    { german: "Er <missing> nach dem Seil.", english: "He reaches for the rope.", answer: "greift" },
+    { german: "Der Richter <missing> über den Fall.", english: "The judge rules on the case.", answer: "richtet" },
+    { german: "Das Geräusch <missing> mich.", english: "The noise startles me.", answer: "erschreckt" },
+    { german: "Der Anwalt <missing> seinen Klienten.", english: "The lawyer defends his client.", answer: "verteidigt" },
+    { german: "Ich <missing> mal das neue Rezept.", english: "I'll try the new recipe.", answer: "probiere" },
+    { german: "Ich <missing> meinen Mantel <missing>.", english: "I put on my coat.", answer: "ziehe an" },
+    { german: "Er <missing> mich nur.", english: "He's just kidding/mocking me.", answer: "verarscht" },
+    { german: "Ich <missing> dir meine Hilfe <missing>.", english: "I offer you my help.", answer: "biete an" },
+    { german: "Kannst du das bitte <missing>?", english: "Can you please repeat that?", answer: "wiederholen" },
+    { german: "Er <missing> mir das Schwimmen <missing>.", english: "He teaches me how to swim.", answer: "bringt bei" },
+    { german: "Ich <missing> das Brot.", english: "I cut the bread.", answer: "schneide" },
+    { german: "Wir <missing> uns über die Lage.", english: "We inform ourselves about the situation.", answer: "informieren" },
+    { german: "Ich <missing> deine Frage.", english: "I answer your question.", answer: "beantworte" },
+    { german: "Er <missing> auf den Tisch.", english: "He hits the table.", answer: "haut" },
+    { german: "Gott <missing> die Welt.", english: "God creates the world.", answer: "erschafft" },
+    { german: "Wir <missing> die Tradition.", english: "We preserve the tradition.", answer: "bewahren" },
+    { german: "Ich <missing> dir noch Geld.", english: "I still owe you money.", answer: "schulde" },
+    { german: "Ich <missing> dir ein Buch.", english: "I give you a book as a gift.", answer: "schenke" },
+    { german: "Er <missing> mir die Entscheidung.", english: "He leaves the decision to me.", answer: "überlässt" },
+    { german: "Sie <missing> ein großes Haus.", english: "She owns a large house.", answer: "besitzt" },
+    { german: "Wir <missing> eine schwere Zeit.", english: "We are going through a tough time.", answer: "machen durch" },
+    { german: "Die Pflanze <missing> schnell.", english: "The plant grows quickly.", answer: "wächst" },
+    { german: "Ich <missing> dir.", english: "I forgive you.", answer: "verzeihe" },
+    { german: "Er <missing> bei der Prüfung.", english: "He fails the exam.", answer: "versagt" },
+    { german: "Er <missing> mich <missing>.", english: "He tricks me.", answer: "legt rein" },
+    { german: "Wir <missing> im Park.", english: "We take a walk in the park.", answer: "spazieren" },
+    { german: "Der Richter <missing> den Angeklagten.", english: "The judge punishes the defendant.", answer: "bestraft" },
+    { german: "Ich <missing> mich nach der Arbeit <missing>.", english: "I rest after work.", answer: "ruhe aus" },
+    { german: "Die Musik <missing> das Publikum.", english: "The music excites the audience.", answer: "begeistert" },
+    { german: "Sie <missing> den Vogel in einen Käfig <missing>.", english: "They lock the bird in a cage.", answer: "sperren ein" },
+    { german: "Der Müll <missing>.", english: "The garbage stinks.", answer: "stinkt" },
+    { german: "Wir <missing> das Problem.", english: "We regulate/solve the problem.", answer: "regeln" },
+    { german: "Er <missing> mich <missing>, was das Geld betrifft.", english: "He lies to me about the money.", answer: "lügt an" },
+    { german: "Wir müssen die Situation <missing>.", english: "We need to clarify the situation.", answer: "klären" },
+    { german: "Er <missing> mich beim Kartenspiel.", english: "He cheats me at cards.", answer: "bescheißt" },
+    { german: "Die Musik <missing> mein Herz.", english: "The music touches my heart.", answer: "berührt" },
+    { german: "Hör auf, so einen Unsinn zu <missing>!", english: "Stop talking such nonsense (shitting)!", answer: "scheißen" }, // Vulgar
+    { german: "Der Frosch <missing> sich in einen Prinzen.", english: "The frog transforms into a prince.", answer: "verwandelt" },
+    { german: "Du <missing> deine Zeit.", english: "You waste your time.", answer: "verschwendest" },
+    { german: "Die Blumen <missing> gut.", english: "The flowers smell good.", answer: "riechen" },
+    { german: "Wie <missing> du auf die Nachricht?", english: "How do you react to the news?", answer: "reagierst" },
+    { german: "Wir <missing> die Krankheit.", english: "We fight the disease.", answer: "bekämpfen" },
+    { german: "Er <missing> seine Meinung offen.", english: "He expresses his opinion openly.", answer: "äußert" },
+    { german: "Ich <missing> meine Wäsche.", english: "I wash my laundry.", answer: "wasche" },
+    { german: "Sie <missing> den Text ins Englische.", english: "She translates the text into English.", answer: "übersetzt" },
+    { german: "Wir müssen ihn da <missing>.", english: "We have to get him out of there.", answer: "rausholen" },
+    { german: "Alle Kinder <missing> gerne <missing>.", english: "All children like to participate.", answer: "machen mit" },
+    { german: "Welches Werkzeug <missing> du?", english: "Which tool do you use?", answer: "verwendest" },
+    { german: "Ein Geist <missing> im Schloss.", english: "A ghost appears in the castle.", answer: "erscheint" },
+    { german: "Was <missing> du hier <missing>?", english: "What are you up to here?", answer: "stellst an" },
+    { german: "Er <missing> sich für das Unrecht.", english: "He avenges the injustice.", answer: "rächt" },
+    { german: "Ich <missing> meinen Fehler <missing>.", english: "I admit my mistake.", answer: "gebe zu" },
+    { german: "Wir <missing> ins Haus <missing>.", english: "We go into the house.", answer: "gehen rein" },
+    { german: "Die Hexe <missing> den Prinzen.", english: "The witch curses the prince.", answer: "verflucht" },
+    { german: "Ich <missing> jeden Tag Deutsch.", english: "I practice German every day.", answer: "übe" },
+    { german: "Er <missing> seine Schuhe <missing>.", english: "He takes off his shoes.", answer: "zieht aus" },
+    { german: "Wir müssen das System <missing>.", english: "We need to activate the system.", answer: "aktivieren" },
+    { german: "Der Jäger <missing> das Tier nur <missing>.", english: "The hunter only wounds the animal (by shooting).", answer: "schießt an" },
+    { german: "Du musst auf den Verkehr <missing>.", english: "You must pay attention to the traffic.", answer: "achten" },
+    { german: "Ich <missing>, dass er recht hat.", english: "I suspect that he is right.", answer: "vermute" },
+    { german: "Die Firma <missing> neue Mitarbeiter <missing>.", english: "The company hires new employees.", answer: "stellt ein" },
+    { german: "Du <missing> mir die ganze Überraschung!", english: "You spoil the whole surprise for me!", answer: "versaust" },
+    { german: "Das Kind <missing> um Gnade.", english: "The child begs for mercy.", answer: "fleht" },
+    { german: "Ich möchte dich besser <missing>.", english: "I would like to get to know you better.", answer: "kennenlernen" },
+    { german: "Die Polizei <missing> den Täter.", english: "The police identify the perpetrator.", answer: "identifiziert" },
+    { german: "Der Wolf <missing> das Schaf.", english: "The wolf eats (devours) the sheep.", answer: "frisst" },
+    { german: "Kannst du bitte das Fenster <missing>?", english: "Can you please open the window?", answer: "aufmachen" },
+    { german: "Wir <missing> uns von unseren Gästen.", english: "We say goodbye to our guests.", answer: "verabschieden" },
+    { german: "Ich <missing>, dass du gewinnst.", english: "I bet that you win.", answer: "wette" }, // Repeated verb, different context
+    { german: "Sie <missing> an der Aufgabe.", english: "She despairs at the task.", answer: "verzweifelt" },
+    { german: "Ein U-Boot <missing> aus dem Wasser <missing>.", english: "A submarine emerges from the water.", answer: "taucht auf" },
+    { german: "Er versucht, mich zu <missing>.", english: "He tries to trick/deceive me.", answer: "linken" },
+    { german: "Die Räuber <missing> die Bank.", english: "The robbers raid the bank.", answer: "überfallen" },
+    { german: "Mir <missing> keine gute Idee <missing>.", english: "No good idea occurs to me.", answer: "fällt ein" },
+    { german: "Ich <missing> mich, das Angebot anzunehmen.", english: "I decide to accept the offer.", answer: "entschließe" },
+    { german: "Der Postbote <missing> die Pakete.", english: "The mailman delivers the packages.", answer: "liefert" },
+    { german: "Er <missing> einen schweren Fehler.", english: "He commits a serious mistake.", answer: "begeht" },
+    { german: "Sie <missing> das Projekt.", english: "She leads the project.", answer: "leitet" },
+    { german: "Ich <missing> <missing>, ob alles in Ordnung ist.", english: "I check if everything is okay.", answer: "sehe nach" },
+    { german: "Du kannst dir ein Geschenk <missing>.", english: "You can choose a gift.", answer: "aussuchen" },
+    { german: "Wir <missing> Briefmarken.", english: "We collect stamps.", answer: "sammeln" },
+    { german: "Wir <missing> uns die Bilder <missing>.", english: "We look at the pictures.", answer: "schauen an" },
+    { german: "Sie <missing> gerne Pferde.", english: "She likes to ride horses.", answer: "reitet" },
+    { german: "Das Baby <missing> süß.", english: "The baby smiles sweetly.", answer: "lächelt" },
+    { german: "Er <missing> seine Entscheidung.", english: "He regrets his decision.", answer: "bereut" },
+    { german: "Der Zeuge <missing> über den Unfall.", english: "The witness reports about the accident.", answer: "berichtet" },
+    { german: "Sie <missing> ihre Ergebnisse.", english: "She presents her results.", answer: "präsentiert" },
+    { german: "Er <missing> die Wahrheit vor ihr.", english: "He hides the truth from her.", answer: "verbirgt" },
+    { german: "Ich <missing> Geld für eine Reise.", english: "I save money for a trip.", answer: "spare" },
+    { german: "Das Gericht <missing> den Angeklagten.", english: "The court convicts the defendant.", answer: "verurteilt" },
+    { german: "Nach der Pause <missing> wir <missing>.", english: "After the break, we continue.", answer: "gehen weiter" },
+    { german: "Er <missing> die ganze Arbeit.", english: "He messes up the whole job.", answer: "vermasselt" },
+    { german: "Er <missing> lieber, als zu lügen.", english: "He prefers to remain silent than to lie.", answer: "schweigt" },
+    { german: "Bitte <missing> Sie das Blatt.", english: "Please turn the page.", answer: "wenden" },
+    { german: "Die Bombe <missing>.", english: "The bomb explodes.", answer: "explodiert" },
+    { german: "Der Lehrer <missing> den Schüler in die letzte Reihe.", english: "The teacher moves the student to the back row.", answer: "versetzt" },
+    { german: "Das Haus <missing> komplett.", english: "The house burns down completely.", answer: "verbrennt" },
+    { german: "Ich <missing> vom Lärm <missing>.", english: "I wake up from the noise.", answer: "wache auf" },
+    { german: "Wir <missing> alle Mittel <missing>, um zu helfen.", english: "We use all means to help.", answer: "setzen ein" },
+    { german: "Wir <missing> zum Ausgangspunkt <missing>.", english: "We go back to the starting point.", answer: "gehen zurück" },
+    { german: "Man sollte unnötigen Stress <missing>.", english: "One should avoid unnecessary stress.", answer: "vermeiden" },
+    { german: "Ich <missing> das Wort durch.", english: "I cross out the word.", answer: "streiche" },
+    { german: "Ich <missing> mich schnell mit neuen Leuten.", english: "I make friends quickly with new people.", answer: "befreunde" },
+    { german: "Wir <missing> an der nächsten Haltestelle <missing>.", english: "We get off at the next stop.", answer: "steigen aus" },
+    { german: "Nach der Arbeit <missing> ich mich gerne.", english: "I like to relax after work.", answer: "entspanne" },
+    { german: "Ich <missing> meine alte Kleidung <missing>.", english: "I give away my old clothes.", answer: "gebe ab" },
+    { german: "Du sollst andere nicht <missing>.", english: "You should not insult others.", answer: "beleidigen" },
+    { german: "Wir <missing> auf den Deal <missing>.", english: "We agree to the deal.", answer: "gehen ein" },
+    { german: "Kannst du mir mein Buch <missing>?", english: "Can you bring back my book?", answer: "zurückbringen" },
+    { german: "Wir <missing> uns an dem Projekt.", english: "We participate in the project.", answer: "beteiligen" },
+    { german: "Wir <missing> uns für morgen Abend.", english: "We arrange to meet tomorrow evening.", answer: "verabreden" },
+    { german: "Er <missing> einen Satz.", english: "He forms a sentence.", answer: "bildet" },
+    { german: "Ich muss etwas <missing>.", english: "I need to lose some weight.", answer: "abnehmen" },
+    { german: "Er <missing> ihn grundlos.", english: "He beats him up for no reason.", answer: "verprügelt" },
+    { german: "Die Politiker <missing> über das Gesetz.", english: "The politicians negotiate about the law.", answer: "verhandeln" },
+    { german: "Kann ich mir deinen Stift <missing>?", english: "Can I borrow your pen?", answer: "leihen" },
+    { german: "Wie <missing> er sich?", english: "How does he behave?", answer: "verhält" },
+    { german: "Ich <missing> oft mit meiner Freundin.", english: "I often talk on the phone with my girlfriend.", answer: "telefoniere" },
+    { german: "Wir <missing> unsere Plätze.", english: "We swap our seats.", answer: "tauschen" },
+    { german: "Der Hund <missing> <missing>.", english: "The dog runs away.", answer: "läuft weg" },
+    { german: "Ich <missing> dir eine Nachricht.", english: "I send you a message.", answer: "sende" },
+    { german: "Er <missing> einfach <missing>, ohne sich zu verabschieden.", english: "He simply leaves without saying goodbye.", answer: "geht weg" },
+    { german: "Du <missing> immer.", english: "You always exaggerate.", answer: "übertreibst" },
+    { german: "Er <missing> vor Schmerz.", english: "He groans in pain.", answer: "stöhnt" },
+    { german: "Der Bergsteiger <missing> in die Tiefe.", english: "The mountaineer falls into the depth.", answer: "stürzt" },
+    { german: "Sie <missing> für den Marathon.", english: "She trains for the marathon.", answer: "trainiert" },
+    { german: "Ich <missing> Medizin.", english: "I study medicine.", answer: "studiere" },
+    { german: "Du musst dich besser <missing>!", english: "You have to behave better!", answer: "benehmen" },
+    { german: "Das Kind <missing> ein Bild.", english: "The child paints a picture.", answer: "malt" },
+    { german: "Der Attentäter <missing> sein Opfer.", english: "The assassin poisons his victim.", answer: "vergiftet" },
+    { german: "Ich <missing> mich an das neue Klima.", english: "I get used to the new climate.", answer: "gewöhne" },
+    { german: "Der Lehrer <missing> die Tests.", english: "The teacher checks the tests.", answer: "prüft" },
+    { german: "Kannst du das bitte <missing>?", english: "Can you please hold this?", answer: "festhalten" },
+    { german: "Der Entführer <missing> die Geisel.", english: "The kidnapper threatens the hostage.", answer: "bedroht" },
+    { german: "Ich <missing> mich für das Geschenk.", english: "I thank (someone) for the gift.", answer: "bedanke" },
+    { german: "Diese laute Musik <missing> mich.", english: "This loud music annoys me.", answer: "nervt" },
+    { german: "Sie <missing> das Essen zu.", english: "She prepares the food.", answer: "bereitet" },
+    { german: "Er <missing> sein Leben für sein Land.", english: "He sacrifices his life for his country.", answer: "opfert" },
+    { german: "Wir <missing> die Gläser.", english: "We empty the glasses.", answer: "leeren" },
+    { german: "Ich <missing> oft vor dem Fernseher <missing>.", english: "I often fall asleep in front of the TV.", answer: "schlafe ein" },
+    { german: "Die Katze <missing> sich im Wald.", english: "The cat gets lost in the forest.", answer: "verläuft" },
+    { german: "Der König <missing> über das Land.", english: "The king rules over the country.", answer: "herrscht" },
+    { german: "Ich <missing> mir deine Geschichte <missing>.", english: "I listen to your story.", answer: "höre an" },
+    { german: "Kannst du mich morgen früh <missing>?", english: "Can you wake me up early tomorrow?", answer: "wecken" },
+    { german: "Man darf Tiere nicht einfach <missing>.", english: "One must not simply abandon animals.", answer: "aussetzen" },
+    { german: "Ich <missing> dir, dass alles gut wird.", english: "I guarantee you that everything will be fine.", answer: "garantiere" }
+];
 
 
         // --- State Variables ---
@@ -357,9 +777,9 @@ const quizQuestions = [
         // Normalize answer (case/umlaut/eszett insensitive)
         function normalizeString(str) {
             return str.toLowerCase()
-                      .replace(/ä/g, 'ae')
-                      .replace(/ö/g, 'oe')
-                      .replace(/ü/g, 'ue')
+                      .replace(/ä/g, 'a')
+                      .replace(/ö/g, 'o')
+                      .replace(/ü/g, 'u')
                       .replace(/ß/g, 'ss');
         }
 
@@ -369,7 +789,7 @@ const quizQuestions = [
             // Adapted from practice_pronouns.txt 'startQuiz'
             currentQuestions = [...quizQuestions]; // Copy questions
             shuffleArray(currentQuestions);
-            currentQuestions = currentQuestions.slice(0, 30);
+            currentQuestions = currentQuestions.slice(0, 50);
             totalQuestions = currentQuestions.length;
 
             // Reset state
@@ -400,7 +820,7 @@ const quizQuestions = [
             const currentQ = currentQuestions[currentQuestionIndex];
 
             // Display German sentence with a blank
-            promptP.innerHTML = currentQ.german.replace('___', '<span class="blank">_____</span>');
+            promptP.innerHTML = currentQ.german.replaceAll('<missing>', '<span class="blank">_____</span>');
             hintP.textContent = `Hint: ${currentQ.english}`; // Display English hint
 
              // Store normalized correct answer for comparison
@@ -473,9 +893,8 @@ const quizQuestions = [
                 mistakes.forEach(m => {
                     const li = document.createElement('li');
                     // Display the sentence with the blank, the user's wrong answer, and the correct answer.
-                     const sentenceWithBlank = m.sentence.replace('___', '_____');
                      li.innerHTML = `
-                        <span class="sentence">Sentence: ${sentenceWithBlank}</span>
+                        <span class="sentence">Sentence: ${m.sentence}</span>
                         Your Answer: <span class="user-ans">${m.user_answer}</span><br>
                         Correct Answer: <span class="correct-ans">${m.correct_answer}</span>
                     `;

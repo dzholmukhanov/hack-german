@@ -1,0 +1,980 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>German Verbs in the Perfect Tense</title>
+    <style>
+        /* CSS Styles - copied directly from the original quiz.html */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --bg-color: #eef2f7; /* Light blue-grey background */
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #app {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: 1em;
+        }
+         h1 {
+             margin-top: 0;
+         }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+         button.secondary:hover {
+             background-color: #5a6268;
+         }
+
+        #start-screen button {
+             margin-top: 20px;
+        }
+
+        #quiz-area, #results-area {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #prompt {
+            font-size: 1.2em; /* Slightly larger */
+            margin-bottom: 10px; /* Reduced margin */
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        #prompt span.base-verb { /* Style for the infinitive */
+            color: var(--secondary-color);
+            font-weight: normal;
+            font-style: italic;
+            margin: 0 2px;
+            font-size: 0.9em;
+        }
+         #prompt span.present-verb { /* Style for the present tense part */
+             color: var(--primary-color);
+             font-weight: bold;
+         }
+        #prompt span.blank {
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-block;
+            min-width: 100px; /* Ensure space for Perfekt form */
+            border-bottom: 1px dashed var(--secondary-color);
+             margin: 0 5px;
+        }
+
+
+        #hint { /* Hint can be used for English translation if desired */
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        #user-answer {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            text-align: center; /* Center input text */
+        }
+
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 1.2em; /* Prevent layout shift */
+        }
+
+        .correct {
+            color: var(--success-color);
+        }
+
+        .incorrect {
+            color: var(--danger-color);
+        }
+         .incorrect span.correct-ans-inline {
+             font-weight: bold;
+             color: var(--success-color);
+             font-style: normal;
+         }
+
+
+        #results-area ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        #results-area li {
+            background-color: var(--light-color);
+            border: 1px solid #e9ecef;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            line-height: 1.4;
+        }
+         #results-area li span {
+             font-weight: bold;
+         }
+         #results-area li .user-ans {
+             color: var(--danger-color);
+             font-style: italic;
+             text-decoration: line-through;
+         }
+         #results-area li .correct-ans {
+              color: var(--success-color);
+              font-weight: bold;
+         }
+         #results-area li .prompt-text { /* Class for the original prompt */
+              display: block;
+              margin-bottom: 5px;
+              color: var(--dark-color);
+              font-size: 0.95em;
+         }
+         /* Re-apply prompt styles for consistency in results */
+         #results-area li .prompt-text span.present-verb {
+             color: var(--primary-color);
+             font-weight: bold;
+         }
+          #results-area li .prompt-text span.base-verb {
+             color: var(--secondary-color);
+             font-weight: normal;
+             font-style: italic;
+             margin: 0 2px;
+             font-size: 0.9em;
+         }
+
+
+        #question-counter {
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+         /* Basic responsiveness */
+         @media (max-width: 600px) {
+             body {
+                 padding: 10px;
+             }
+             #app {
+                 padding: 20px;
+             }
+             button {
+                 padding: 10px 15px;
+             }
+         }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>German Verbs in the Perfect Tense</h1>
+        <p>Fill the gap with the correct perfect form of the verb <br>(e.g. 'ich habe gegessen', 'er ist gegangen').<br>Contains 500 most common German verbs.</p>
+
+        <div id="start-screen">
+             <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+        <p style="font-size: 0.8em; color: var(--secondary-color);">Each quiz round selects 50 questions randomly.</p>
+
+        <div id="quiz-area" style="display: none;">
+            <p id="question-counter"></p>
+            <p id="prompt"></p>
+            <!-- Hint is not used actively but kept in HTML -->
+            <p id="hint" style="display: none;"></p>
+            <input type="text" id="user-answer" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="e.g. habe gegessen / ist gegangen">
+            <button id="submit-answer" onclick="checkAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <button class="secondary" onclick="resetQuiz()">End Quiz & Restart</button>
+        </div>
+
+        <div id="results-area" style="display: none;">
+            <h2>Quiz Finished</h2>
+            <p id="final-score"></p>
+            <p id="percentage"></p>
+            <div id="mistakes-container">
+                 <h3>Review Your Mistakes:</h3>
+                 <ul id="mistakes-list"></ul>
+            </div>
+             <p id="no-mistakes" style="display: none; color: var(--success-color); font-weight: bold;">Congratulations! You made no mistakes.</p>
+            <button onclick="resetQuiz()">Practice Again</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizQuestions = [
+  {"subject": "Ich", "present": "bin", "infinitive": "sein", "answer": "bin gewesen"},
+  {"subject": "Ich", "present": "habe", "infinitive": "haben", "answer": "habe gehabt"},
+  {"subject": "Ich", "present": "kann", "infinitive": "können", "answer": "habe gekonnt"},
+  {"subject": "Ich", "present": "werde", "infinitive": "werden", "answer": "bin geworden"},
+  {"subject": "Ich", "present": "weiß", "infinitive": "wissen", "answer": "habe gewusst"},
+  {"subject": "Ich", "present": "will", "infinitive": "wollen", "answer": "habe gewollt"},
+  {"subject": "Ich", "present": "muss", "infinitive": "müssen", "answer": "habe gemusst"},
+  {"subject": "Ich", "present": "mache", "infinitive": "machen", "answer": "habe gemacht"},
+  {"subject": "Ich", "present": "tue", "infinitive": "tun", "answer": "habe getan"},
+  {"subject": "Ich", "present": "sage", "infinitive": "sagen", "answer": "habe gesagt"},
+  {"subject": "Ich", "present": "gehe", "infinitive": "gehen", "answer": "bin gegangen"},
+  {"subject": "Ich", "present": "sehe", "infinitive": "sehen", "answer": "habe gesehen"},
+  {"subject": "Ich", "present": "gebe", "infinitive": "geben", "answer": "habe gegeben"},
+  {"subject": "Ich", "present": "soll", "infinitive": "sollen", "answer": "habe gesollt"},
+  {"subject": "Ich", "present": "meine", "infinitive": "meinen", "answer": "habe gemeint"},
+  {"subject": "Ich", "present": "komme", "infinitive": "kommen", "answer": "bin gekommen"},
+  {"subject": "Ich", "present": "lasse", "infinitive": "lassen", "answer": "habe gelassen"},
+  {"subject": "Ich", "present": "glaube", "infinitive": "glauben", "answer": "habe geglaubt"},
+  {"subject": "Ich", "present": "passiere", "infinitive": "passieren", "answer": "bin passiert"},
+  {"subject": "Ich", "present": "rede", "infinitive": "reden", "answer": "habe geredet"},
+  {"subject": "Ich", "present": "mag", "infinitive": "mögen", "answer": "habe gemocht"},
+  {"subject": "Ich", "present": "höre", "infinitive": "hören", "answer": "habe gehört"},
+  {"subject": "Ich", "present": "helfe", "infinitive": "helfen", "answer": "habe geholfen"},
+  {"subject": "Ich", "present": "finde", "infinitive": "finden", "answer": "habe gefunden"},
+  {"subject": "Ich", "present": "bleibe", "infinitive": "bleiben", "answer": "bin geblieben"},
+  {"subject": "Ich", "present": "brauche", "infinitive": "brauchen", "answer": "habe gebraucht"},
+  {"subject": "Ich", "present": "liebe", "infinitive": "lieben", "answer": "habe geliebt"},
+  {"subject": "Ich", "present": "bringe", "infinitive": "bringen", "answer": "habe gebracht"},
+  {"subject": "Ich", "present": "stehe", "infinitive": "stehen", "answer": "habe gestanden"},
+  {"subject": "Ich", "present": "heiße", "infinitive": "heißen", "answer": "habe geheißen"},
+  {"subject": "Ich", "present": "nehme", "infinitive": "nehmen", "answer": "habe genommen"},
+  {"subject": "Ich", "present": "spreche", "infinitive": "sprechen", "answer": "habe gesprochen"},
+  {"subject": "Ich", "present": "sterbe", "infinitive": "sterben", "answer": "bin gestorben"},
+  {"subject": "Ich", "present": "töte", "infinitive": "töten", "answer": "habe getötet"},
+  {"subject": "Ich", "present": "bekomme", "infinitive": "bekommen", "answer": "habe bekommen"},
+  {"subject": "Ich", "present": "vergesse", "infinitive": "vergessen", "answer": "habe vergessen"},
+  {"subject": "Ich", "present": "halte", "infinitive": "halten", "answer": "habe gehalten"},
+  {"subject": "Ich", "present": "warte", "infinitive": "warten", "answer": "habe gewartet"},
+  {"subject": "Ich", "present": "kenne", "infinitive": "kennen", "answer": "habe gekannt"},
+  {"subject": "Ich", "present": "verstehe", "infinitive": "verstehen", "answer": "habe verstanden"},
+  {"subject": "Ich", "present": "denke", "infinitive": "denken", "answer": "habe gedacht"},
+  {"subject": "Ich", "present": "lebe", "infinitive": "leben", "answer": "habe gelebt"},
+  {"subject": "Ich", "present": "stimme", "infinitive": "stimmen", "answer": "habe gestimmt"},
+  {"subject": "Ich", "present": "verliere", "infinitive": "verlieren", "answer": "habe verloren"},
+  {"subject": "Ich", "present": "darf", "infinitive": "dürfen", "answer": "habe gedurft"},
+  {"subject": "Ich", "present": "arbeite", "infinitive": "arbeiten", "answer": "habe gearbeitet"},
+  {"subject": "Ich", "present": "esse", "infinitive": "essen", "answer": "habe gegessen"},
+  {"subject": "Ich", "present": "spiele", "infinitive": "spielen", "answer": "habe gespielt"},
+  {"subject": "Ich", "present": "liege", "infinitive": "liegen", "answer": "habe gelegen"},
+  {"subject": "Ich", "present": "fahre", "infinitive": "fahren", "answer": "bin gefahren"},
+  {"subject": "Ich", "present": "versuche", "infinitive": "versuchen", "answer": "habe versucht"},
+  {"subject": "Ich", "present": "erzähle", "infinitive": "erzählen", "answer": "habe erzählt"},
+  {"subject": "Ich", "present": "bedeute", "infinitive": "bedeuten", "answer": "habe bedeutet"},
+  {"subject": "Ich", "present": "frage", "infinitive": "fragen", "answer": "habe gefragt"},
+  {"subject": "Ich", "present": "bestimme", "infinitive": "bestimmen", "answer": "habe bestimmt"},
+  {"subject": "Ich", "present": "treffe", "infinitive": "treffen", "answer": "habe getroffen"},
+  {"subject": "Ich", "present": "hoffe", "infinitive": "hoffen", "answer": "habe gehofft"},
+  {"subject": "Ich", "present": "suche", "infinitive": "suchen", "answer": "habe gesucht"},
+  {"subject": "Ich", "present": "verlasse", "infinitive": "verlassen", "answer": "habe verlassen"},
+  {"subject": "Ich", "present": "zeige", "infinitive": "zeigen", "answer": "habe gezeigt"},
+  {"subject": "Ich", "present": "kriege", "infinitive": "kriegen", "answer": "habe gekriegt"},
+  {"subject": "Ich", "present": "hole", "infinitive": "holen", "answer": "habe geholt"},
+  {"subject": "Ich", "present": "gefalle", "infinitive": "gefallen", "answer": "habe gefallen"},
+  {"subject": "Ich", "present": "rette", "infinitive": "retten", "answer": "habe gerettet"},
+  {"subject": "Ich", "present": "scheine", "infinitive": "scheinen", "answer": "habe geschienen"},
+  {"subject": "Ich", "present": "schlafe", "infinitive": "schlafen", "answer": "habe geschlafen"},
+  {"subject": "Ich", "present": "lerne", "infinitive": "lernen", "answer": "habe gelernt"},
+  {"subject": "Ich", "present": "trinke", "infinitive": "trinken", "answer": "habe getrunken"},
+  {"subject": "Ich", "present": "schaffe", "infinitive": "schaffen", "answer": "habe geschaffen"},
+  {"subject": "Ich", "present": "funktioniere", "infinitive": "funktionieren", "answer": "habe funktioniert"},
+  {"subject": "Ich", "present": "tue weh", "infinitive": "wehtun", "answer": "habe wehgetan"},
+  {"subject": "Ich", "present": "stelle", "infinitive": "stellen", "answer": "habe gestellt"},
+  {"subject": "Ich", "present": "nenne", "infinitive": "nennen", "answer": "habe genannt"},
+  {"subject": "Ich", "present": "laufe", "infinitive": "laufen", "answer": "bin gelaufen"},
+  {"subject": "Ich", "present": "fühle", "infinitive": "fühlen", "answer": "habe gefühlt"},
+  {"subject": "Ich", "present": "erinnere", "infinitive": "erinnern", "answer": "habe erinnert"},
+  {"subject": "Ich", "present": "kämpfe", "infinitive": "kämpfen", "answer": "habe gekämpft"},
+  {"subject": "Ich", "present": "heirate", "infinitive": "heiraten", "answer": "habe geheiratet"},
+  {"subject": "Ich", "present": "erkläre", "infinitive": "erklären", "answer": "habe erklärt"},
+  {"subject": "Ich", "present": "sitze", "infinitive": "sitzen", "answer": "habe gesessen"},
+  {"subject": "Ich", "present": "trage", "infinitive": "tragen", "answer": "habe getragen"},
+  {"subject": "Ich", "present": "kaufe", "infinitive": "kaufen", "answer": "habe gekauft"},
+  {"subject": "Ich", "present": "hasse", "infinitive": "hassen", "answer": "habe gehasst"},
+  {"subject": "Ich", "present": "bringe um", "infinitive": "umbringen", "answer": "habe umgebracht"},
+  {"subject": "Ich", "present": "kümmere", "infinitive": "kümmern", "answer": "habe gekümmert"},
+  {"subject": "Ich", "present": "verletze", "infinitive": "verletzen", "answer": "habe verletzt"},
+  {"subject": "Ich", "present": "interessiere", "infinitive": "interessieren", "answer": "habe interessiert"},
+  {"subject": "Ich", "present": "ziehe", "infinitive": "ziehen", "answer": "habe gezogen"},
+  {"subject": "Ich", "present": "rufe an", "infinitive": "anrufen", "answer": "habe angerufen"},
+  {"subject": "Ich", "present": "höre auf", "infinitive": "aufhören", "answer": "habe aufgehört"},
+  {"subject": "Ich", "present": "stelle vor", "infinitive": "vorstellen", "answer": "habe vorgestellt"},
+  {"subject": "Ich", "present": "verschwinde", "infinitive": "verschwinden", "answer": "bin verschwunden"},
+  {"subject": "Ich", "present": "erwarte", "infinitive": "erwarten", "answer": "habe erwartet"},
+  {"subject": "Ich", "present": "führe", "infinitive": "führen", "answer": "habe geführt"},
+  {"subject": "Ich", "present": "fange an", "infinitive": "anfangen", "answer": "habe angefangen"},
+  {"subject": "Ich", "present": "geschehe", "infinitive": "geschehen", "answer": "bin geschehen"},
+  {"subject": "Ich", "present": "gewinne", "infinitive": "gewinnen", "answer": "habe gewonnen"},
+  {"subject": "Ich", "present": "klinge", "infinitive": "klingen", "answer": "habe geklungen"},
+  {"subject": "Ich", "present": "setze", "infinitive": "setzen", "answer": "habe gesetzt"},
+  {"subject": "Ich", "present": "benutze", "infinitive": "benutzen", "answer": "habe benutzt"},
+  {"subject": "Ich", "present": "falle", "infinitive": "fallen", "answer": "bin gefallen"},
+  {"subject": "Ich", "present": "schicke", "infinitive": "schicken", "answer": "habe geschickt"},
+  {"subject": "Ich", "present": "fliege", "infinitive": "fliegen", "answer": "bin geflogen"},
+  {"subject": "Ich", "present": "erfahre", "infinitive": "erfahren", "answer": "habe erfahren"},
+  {"subject": "Ich", "present": "bezahle", "infinitive": "bezahlen", "answer": "habe bezahlt"},
+  {"subject": "Ich", "present": "schreibe", "infinitive": "schreiben", "answer": "habe geschrieben"},
+  {"subject": "Ich", "present": "schätze", "infinitive": "schätzen", "answer": "habe geschätzt"},
+  {"subject": "Ich", "present": "bitte", "infinitive": "bitten", "answer": "habe gebeten"},
+  {"subject": "Ich", "present": "lese", "infinitive": "lesen", "answer": "habe gelesen"},
+  {"subject": "Ich", "present": "behalte", "infinitive": "behalten", "answer": "habe behalten"},
+  {"subject": "Ich", "present": "verkaufe", "infinitive": "verkaufen", "answer": "habe verkauft"},
+  {"subject": "Ich", "present": "verdiene", "infinitive": "verdienen", "answer": "habe verdient"},
+  {"subject": "Ich", "present": "wünsche", "infinitive": "wünschen", "answer": "habe gewünscht"},
+  {"subject": "Ich", "present": "verheirate", "infinitive": "verheiraten", "answer": "habe verheiratet"},
+  {"subject": "Ich", "present": "verdamme", "infinitive": "verdammen", "answer": "habe verdammt"},
+  {"subject": "Ich", "present": "stecke", "infinitive": "stecken", "answer": "habe gesteckt"},
+  {"subject": "Ich", "present": "passe", "infinitive": "passen", "answer": "habe gepasst"},
+  {"subject": "Ich", "present": "schlage", "infinitive": "schlagen", "answer": "habe geschlagen"},
+  {"subject": "Ich", "present": "verändere", "infinitive": "verändern", "answer": "habe verändert"},
+  {"subject": "Ich", "present": "folge", "infinitive": "folgen", "answer": "bin gefolgt"},
+  {"subject": "Ich", "present": "sehe an", "infinitive": "ansehen", "answer": "habe angesehen"},
+  {"subject": "Ich", "present": "zerstöre", "infinitive": "zerstören", "answer": "habe zerstört"},
+  {"subject": "Ich", "present": "entschuldige", "infinitive": "entschuldigen", "answer": "habe entschuldigt"},
+  {"subject": "Ich", "present": "schieße", "infinitive": "schießen", "answer": "habe geschossen"},
+  {"subject": "Ich", "present": "beschütze", "infinitive": "beschützen", "answer": "habe beschützt"},
+  {"subject": "Ich", "present": "stehle", "infinitive": "stehlen", "answer": "habe gestohlen"},
+  {"subject": "Ich", "present": "bewege", "infinitive": "bewegen", "answer": "habe bewegt"},
+  {"subject": "Ich", "present": "erwische", "infinitive": "erwischen", "answer": "habe erwischt"},
+  {"subject": "Ich", "present": "vertraue", "infinitive": "vertrauen", "answer": "habe vertraut"},
+  {"subject": "Ich", "present": "erreiche", "infinitive": "erreichen", "answer": "habe erreicht"},
+  {"subject": "Ich", "present": "verspreche", "infinitive": "versprechen", "answer": "habe versprochen"},
+  {"subject": "Ich", "present": "erledige", "infinitive": "erledigen", "answer": "habe erledigt"},
+  {"subject": "Ich", "present": "drehe", "infinitive": "drehen", "answer": "habe gedreht"},
+  {"subject": "Ich", "present": "schwöre", "infinitive": "schwören", "answer": "habe geschworen"},
+  {"subject": "Ich", "present": "sehe aus", "infinitive": "aussehen", "answer": "habe ausgesehen"},
+  {"subject": "Ich", "present": "verliebe", "infinitive": "verlieben", "answer": "habe verliebt"},
+  {"subject": "Ich", "present": "verrate", "infinitive": "verraten", "answer": "habe verraten"},
+  {"subject": "Ich", "present": "gebäre", "infinitive": "gebären", "answer": "habe geboren"},
+  {"subject": "Ich", "present": "halte auf", "infinitive": "aufhalten", "answer": "habe aufgehalten"},
+  {"subject": "Ich", "present": "dauere", "infinitive": "dauern", "answer": "habe gedauert"},
+  {"subject": "Ich", "present": "verstecke", "infinitive": "verstecken", "answer": "habe versteckt"},
+  {"subject": "Ich", "present": "fange", "infinitive": "fangen", "answer": "habe gefangen"},
+  {"subject": "Ich", "present": "beschäftige", "infinitive": "beschäftigen", "answer": "habe beschäftigt"},
+  {"subject": "Ich", "present": "tanze", "infinitive": "tanzen", "answer": "habe getanzt"},
+  {"subject": "Ich", "present": "fehle", "infinitive": "fehlen", "answer": "habe gefehlt"},
+  {"subject": "Ich", "present": "öffne", "infinitive": "öffnen", "answer": "habe geöffnet"},
+  {"subject": "Ich", "present": "entscheide", "infinitive": "entscheiden", "answer": "habe entschieden"},
+  {"subject": "Ich", "present": "entferne", "infinitive": "entfernen", "answer": "habe entfernt"},
+  {"subject": "Ich", "present": "gehöre", "infinitive": "gehören", "answer": "habe gehört"},
+  {"subject": "Ich", "present": "zahle", "infinitive": "zahlen", "answer": "habe gezahlt"},
+  {"subject": "Ich", "present": "lege", "infinitive": "legen", "answer": "habe gelegt"},
+  {"subject": "Ich", "present": "erhalte", "infinitive": "erhalten", "answer": "habe erhalten"},
+  {"subject": "Ich", "present": "sorge", "infinitive": "sorgen", "answer": "habe gesorgt"},
+  {"subject": "Ich", "present": "schaue", "infinitive": "schauen", "answer": "habe geschaut"},
+  {"subject": "Ich", "present": "lache", "infinitive": "lachen", "answer": "habe gelacht"},
+  {"subject": "Ich", "present": "beweise", "infinitive": "beweisen", "answer": "habe bewiesen"},
+  {"subject": "Ich", "present": "finde heraus", "infinitive": "herausfinden", "answer": "habe herausgefunden"},
+  {"subject": "Ich", "present": "fürchte", "infinitive": "fürchten", "answer": "habe gefürchtet"},
+  {"subject": "Ich", "present": "beginne", "infinitive": "beginnen", "answer": "habe begonnen"},
+  {"subject": "Ich", "present": "überrasche", "infinitive": "überraschen", "answer": "habe überrascht"},
+  {"subject": "Ich", "present": "singe", "infinitive": "singen", "answer": "habe gesungen"},
+  {"subject": "Ich", "present": "besorge", "infinitive": "besorgen", "answer": "habe besorgt"},
+  {"subject": "Ich", "present": "besuche", "infinitive": "besuchen", "answer": "habe besucht"},
+  {"subject": "Ich", "present": "ändere", "infinitive": "ändern", "answer": "habe geändert"},
+  {"subject": "Ich", "present": "nehme mit", "infinitive": "mitnehmen", "answer": "habe mitgenommen"},
+  {"subject": "Ich", "present": "rufe", "infinitive": "rufen", "answer": "habe gerufen"},
+  {"subject": "Ich", "present": "leiste", "infinitive": "leisten", "answer": "habe geleistet"},
+  {"subject": "Ich", "present": "entkomme", "infinitive": "entkommen", "answer": "bin entkommen"},
+  {"subject": "Ich", "present": "vermisse", "infinitive": "vermissen", "answer": "habe vermisst"},
+  {"subject": "Ich", "present": "hänge", "infinitive": "hängen", "answer": "habe gehangen"},
+  {"subject": "Ich", "present": "werfe", "infinitive": "werfen", "answer": "habe geworfen"},
+  {"subject": "Ich", "present": "überlebe", "infinitive": "überleben", "answer": "habe überlebt"},
+  {"subject": "Ich", "present": "wette", "infinitive": "wetten", "answer": "habe gewettet"},
+  {"subject": "Ich", "present": "erkenne", "infinitive": "erkennen", "answer": "habe erkannt"},
+  {"subject": "Ich", "present": "wohne", "infinitive": "wohnen", "answer": "habe gewohnt"},
+  {"subject": "Ich", "present": "schreite", "infinitive": "schreiten", "answer": "bin geschritten"},
+  {"subject": "Ich", "present": "teile", "infinitive": "teilen", "answer": "habe geteilt"},
+  {"subject": "Ich", "present": "erschieße", "infinitive": "erschießen", "answer": "habe erschossen"},
+  {"subject": "Ich", "present": "übernehme", "infinitive": "übernehmen", "answer": "habe übernommen"},
+  {"subject": "Ich", "present": "danke", "infinitive": "danken", "answer": "habe gedankt"},
+  {"subject": "Ich", "present": "baue", "infinitive": "bauen", "answer": "habe gebaut"},
+  {"subject": "Ich", "present": "schütze", "infinitive": "schützen", "answer": "habe geschützt"},
+  {"subject": "Ich", "present": "beende", "infinitive": "beenden", "answer": "habe beendet"},
+  {"subject": "Ich", "present": "verpasse", "infinitive": "verpassen", "answer": "habe verpasst"},
+  {"subject": "Ich", "present": "fasse", "infinitive": "fassen", "answer": "habe gefasst"},
+  {"subject": "Ich", "present": "verhafte", "infinitive": "verhaften", "answer": "habe verhaftet"},
+  {"subject": "Ich", "present": "feiere", "infinitive": "feiern", "answer": "habe gefeiert"},
+  {"subject": "Ich", "present": "unterhalte", "infinitive": "unterhalten", "answer": "habe unterhalten"},
+  {"subject": "Ich", "present": "passe auf", "infinitive": "aufpassen", "answer": "habe aufgepasst"},
+  {"subject": "Ich", "present": "bringe mit", "infinitive": "mitbringen", "answer": "habe mitgebracht"},
+  {"subject": "Ich", "present": "melde", "infinitive": "melden", "answer": "habe gemeldet"},
+  {"subject": "Ich", "present": "bestehe", "infinitive": "bestehen", "answer": "habe bestanden"},
+  {"subject": "Ich", "present": "plane", "infinitive": "planen", "answer": "habe geplant"},
+  {"subject": "Ich", "present": "betrinke", "infinitive": "betrinken", "answer": "habe betrunken"},
+  {"subject": "Ich", "present": "breche", "infinitive": "brechen", "answer": "habe gebrochen"},
+  {"subject": "Ich", "present": "tue an", "infinitive": "antun", "answer": "habe angetan"},
+  {"subject": "Ich", "present": "komme mit", "infinitive": "mitkommen", "answer": "bin mitgekommen"},
+  {"subject": "Ich", "present": "denke nach", "infinitive": "nachdenken", "answer": "habe nachgedacht"},
+  {"subject": "Ich", "present": "ermorde", "infinitive": "ermorden", "answer": "habe ermordet"},
+  {"subject": "Ich", "present": "leide", "infinitive": "leiden", "answer": "habe gelitten"},
+  {"subject": "Ich", "present": "freue", "infinitive": "freuen", "answer": "habe gefreut"},
+  {"subject": "Ich", "present": "gebe auf", "infinitive": "aufgeben", "answer": "habe aufgegeben"},
+  {"subject": "Ich", "present": "verbringe", "infinitive": "verbringen", "answer": "habe verbracht"},
+  {"subject": "Ich", "present": "verfolge", "infinitive": "verfolgen", "answer": "habe verfolgt"},
+  {"subject": "Ich", "present": "bemerke", "infinitive": "bemerken", "answer": "habe bemerkt"},
+  {"subject": "Ich", "present": "schließe", "infinitive": "schließen", "answer": "habe geschlossen"},
+  {"subject": "Ich", "present": "weine", "infinitive": "weinen", "answer": "habe geweint"},
+  {"subject": "Ich", "present": "küsse", "infinitive": "küssen", "answer": "habe geküsst"},
+  {"subject": "Ich", "present": "behandle", "infinitive": "behandeln", "answer": "habe behandelt"},
+  {"subject": "Ich", "present": "entdecke", "infinitive": "entdecken", "answer": "habe entdeckt"},
+  {"subject": "Ich", "present": "trete", "infinitive": "treten", "answer": "bin getreten"},
+  {"subject": "Ich", "present": "laute", "infinitive": "lauten", "answer": "habe gelautet"},
+  {"subject": "Ich", "present": "gehe hin", "infinitive": "hingehen", "answer": "bin hingegangen"},
+  {"subject": "Ich", "present": "feuere", "infinitive": "feuern", "answer": "habe gefeuert"},
+  {"subject": "Ich", "present": "gebrauche", "infinitive": "gebrauchen", "answer": "habe gebraucht"},
+  {"subject": "Ich", "present": "verhindere", "infinitive": "verhindern", "answer": "habe verhindert"},
+  {"subject": "Ich", "present": "erwähne", "infinitive": "erwähnen", "answer": "habe erwähnt"},
+  {"subject": "Ich", "present": "erlaube", "infinitive": "erlauben", "answer": "habe erlaubt"},
+  {"subject": "Ich", "present": "lade ein", "infinitive": "einladen", "answer": "habe eingeladen"},
+  {"subject": "Ich", "present": "greife an", "infinitive": "angreifen", "answer": "habe angegriffen"},
+  {"subject": "Ich", "present": "lasse zu", "infinitive": "zulassen", "answer": "habe zugelassen"},
+  {"subject": "Ich", "present": "lüge", "infinitive": "lügen", "answer": "habe gelogen"},
+  {"subject": "Ich", "present": "verlange", "infinitive": "verlangen", "answer": "habe verlangt"},
+  {"subject": "Ich", "present": "löse", "infinitive": "lösen", "answer": "habe gelöst"},
+  {"subject": "Ich", "present": "bereite vor", "infinitive": "vorbereiten", "answer": "habe vorbereitet"},
+  {"subject": "Ich", "present": "überprüfe", "infinitive": "überprüfen", "answer": "habe überprüft"},
+  {"subject": "Ich", "present": "störe", "infinitive": "stören", "answer": "habe gestört"},
+  {"subject": "Ich", "present": "kontrolliere", "infinitive": "kontrollieren", "answer": "habe kontrolliert"},
+  {"subject": "Ich", "present": "gelte", "infinitive": "gelten", "answer": "habe gegolten"},
+  {"subject": "Ich", "present": "komme zurück", "infinitive": "zurückkommen", "answer": "bin zurückgekommen"},
+  {"subject": "Ich", "present": "hinterlasse", "infinitive": "hinterlassen", "answer": "habe hinterlassen"},
+  {"subject": "Ich", "present": "jage", "infinitive": "jagen", "answer": "habe gejagt"},
+  {"subject": "Ich", "present": "ende", "infinitive": "enden", "answer": "habe geendet"},
+  {"subject": "Ich", "present": "irre", "infinitive": "irren", "answer": "habe geirrt"},
+  {"subject": "Ich", "present": "merke", "infinitive": "merken", "answer": "habe gemerkt"},
+  {"subject": "Ich", "present": "hole ab", "infinitive": "abholen", "answer": "habe abgeholt"},
+  {"subject": "Ich", "present": "stoppe", "infinitive": "stoppen", "answer": "habe gestoppt"},
+  {"subject": "Ich", "present": "schreie", "infinitive": "schreien", "answer": "habe geschrien"},
+  {"subject": "Ich", "present": "klaue", "infinitive": "klauen", "answer": "habe geklaut"},
+  {"subject": "Ich", "present": "entführe", "infinitive": "entführen", "answer": "habe entführt"},
+  {"subject": "Ich", "present": "überlege", "infinitive": "überlegen", "answer": "habe überlegt"},
+  {"subject": "Ich", "present": "repariere", "infinitive": "reparieren", "answer": "habe repariert"},
+  {"subject": "Ich", "present": "gehe aus", "infinitive": "ausgehen", "answer": "bin ausgegangen"},
+  {"subject": "Ich", "present": "überzeuge", "infinitive": "überzeugen", "answer": "habe überzeugt"},
+  {"subject": "Ich", "present": "erwachse", "infinitive": "erwachsen", "answer": "bin erwachsen"},
+  {"subject": "Ich", "present": "nehme an", "infinitive": "annehmen", "answer": "habe angenommen"},
+  {"subject": "Ich", "present": "zähle", "infinitive": "zählen", "answer": "habe gezählt"},
+  {"subject": "Ich", "present": "vergebe", "infinitive": "vergeben", "answer": "habe vergeben"},
+  {"subject": "Ich", "present": "lande", "infinitive": "landen", "answer": "bin gelandet"},
+  {"subject": "Ich", "present": "trenne", "infinitive": "trennen", "answer": "habe getrennt"},
+  {"subject": "Ich", "present": "verbinde", "infinitive": "verbinden", "answer": "habe verbunden"},
+  {"subject": "Ich", "present": "springe", "infinitive": "springen", "answer": "bin gesprungen"},
+  {"subject": "Ich", "present": "fliehe", "infinitive": "fliehen", "answer": "bin geflohen"},
+  {"subject": "Ich", "present": "nehme auf", "infinitive": "aufnehmen", "answer": "habe aufgenommen"},
+  {"subject": "Ich", "present": "verursache", "infinitive": "verursachen", "answer": "habe verursacht"},
+  {"subject": "Ich", "present": "traue", "infinitive": "trauen", "answer": "habe getraut"},
+  {"subject": "Ich", "present": "klappe", "infinitive": "klappen", "answer": "habe geklappt"},
+  {"subject": "Ich", "present": "umgehe", "infinitive": "umgehen", "answer": "habe umgangen"},
+  {"subject": "Ich", "present": "wähle", "infinitive": "wählen", "answer": "habe gewählt"},
+  {"subject": "Ich", "present": "existiere", "infinitive": "existieren", "answer": "habe existiert"},
+  {"subject": "Ich", "present": "unternehme", "infinitive": "unternehmen", "answer": "habe unternommen"},
+  {"subject": "Ich", "present": "befinde", "infinitive": "befinden", "answer": "habe befunden"},
+  {"subject": "Ich", "present": "mache weiter", "infinitive": "weitermachen", "answer": "habe weitergemacht"},
+  {"subject": "Ich", "present": "rauche", "infinitive": "rauchen", "answer": "habe geraucht"},
+  {"subject": "Ich", "present": "rege auf", "infinitive": "aufregen", "answer": "habe aufgeregt"},
+  {"subject": "Ich", "present": "entlasse", "infinitive": "entlassen", "answer": "habe entlassen"},
+  {"subject": "Ich", "present": "entwickle", "infinitive": "entwickeln", "answer": "habe entwickelt"},
+  {"subject": "Ich", "present": "beobachte", "infinitive": "beobachten", "answer": "habe beobachtet"},
+  {"subject": "Ich", "present": "rate", "infinitive": "raten", "answer": "habe geraten"},
+  {"subject": "Ich", "present": "gerate", "infinitive": "geraten", "answer": "bin geraten"},
+  {"subject": "Ich", "present": "bespreche", "infinitive": "besprechen", "answer": "habe besprochen"},
+  {"subject": "Ich", "present": "verbiete", "infinitive": "verbieten", "answer": "habe verboten"},
+  {"subject": "Ich", "present": "gehe an", "infinitive": "angehen", "answer": "bin angegangen"},
+  {"subject": "Ich", "present": "kapiere", "infinitive": "kapieren", "answer": "habe kapiert"},
+  {"subject": "Ich", "present": "ertrage", "infinitive": "ertragen", "answer": "habe ertragen"},
+  {"subject": "Ich", "present": "beeile", "infinitive": "beeilen", "answer": "habe beeilt"},
+  {"subject": "Ich", "present": "haue ab", "infinitive": "abhauen", "answer": "bin abgehauen"},
+  {"subject": "Ich", "present": "schließe ab", "infinitive": "abschließen", "answer": "habe abgeschlossen"},
+  {"subject": "Ich", "present": "enttäusche", "infinitive": "enttäuschen", "answer": "habe enttäuscht"},
+  {"subject": "Ich", "present": "schwimme", "infinitive": "schwimmen", "answer": "bin geschwommen"},
+  {"subject": "Ich", "present": "ergebe", "infinitive": "ergeben", "answer": "habe ergeben"},
+  {"subject": "Ich", "present": "biete", "infinitive": "bieten", "answer": "habe geboten"},
+  {"subject": "Ich", "present": "schmecke", "infinitive": "schmecken", "answer": "habe geschmeckt"},
+  {"subject": "Ich", "present": "riskiere", "infinitive": "riskieren", "answer": "habe riskiert"},
+  {"subject": "Ich", "present": "konzentriere", "infinitive": "konzentrieren", "answer": "habe konzentriert"},
+  {"subject": "Ich", "present": "übergebe", "infinitive": "übergeben", "answer": "habe übergeben"},
+  {"subject": "Ich", "present": "befreie", "infinitive": "befreien", "answer": "habe befreit"},
+  {"subject": "Ich", "present": "starte", "infinitive": "starten", "answer": "bin gestartet"},
+  {"subject": "Ich", "present": "vernichte", "infinitive": "vernichten", "answer": "habe vernichtet"},
+  {"subject": "Ich", "present": "wahre", "infinitive": "wahren", "answer": "habe gewahrt"},
+  {"subject": "Ich", "present": "spüre", "infinitive": "spüren", "answer": "habe gespürt"},
+  {"subject": "Ich", "present": "betreffe", "infinitive": "betreffen", "answer": "habe betroffen"},
+  {"subject": "Ich", "present": "antworte", "infinitive": "antworten", "answer": "habe geantwortet"},
+  {"subject": "Ich", "present": "komme an", "infinitive": "ankommen", "answer": "bin angekommen"},
+  {"subject": "Ich", "present": "begleite", "infinitive": "begleiten", "answer": "habe begleitet"},
+  {"subject": "Ich", "present": "akzeptiere", "infinitive": "akzeptieren", "answer": "habe akzeptiert"},
+  {"subject": "Ich", "present": "steige", "infinitive": "steigen", "answer": "bin gestiegen"},
+  {"subject": "Ich", "present": "stamme", "infinitive": "stammen", "answer": "habe gestammt"},
+  {"subject": "Ich", "present": "höre zu", "infinitive": "zuhören", "answer": "habe zugehört"},
+  {"subject": "Ich", "present": "begegne", "infinitive": "begegnen", "answer": "bin begegnet"},
+  {"subject": "Ich", "present": "gucke", "infinitive": "gucken", "answer": "habe geguckt"},
+  {"subject": "Ich", "present": "brenne", "infinitive": "brennen", "answer": "habe gebrannt"},
+  {"subject": "Ich", "present": "begrabe", "infinitive": "begraben", "answer": "habe begraben"},
+  {"subject": "Ich", "present": "verbreche", "infinitive": "verbrechen", "answer": "habe verbrochen"},
+  {"subject": "Ich", "present": "beruhige", "infinitive": "beruhigen", "answer": "habe beruhigt"},
+  {"subject": "Ich", "present": "koche", "infinitive": "kochen", "answer": "habe gekocht"},
+  {"subject": "Ich", "present": "bestelle", "infinitive": "bestellen", "answer": "habe bestellt"},
+  {"subject": "Ich", "present": "ruiniere", "infinitive": "ruinieren", "answer": "habe ruiniert"},
+  {"subject": "Ich", "present": "koste", "infinitive": "kosten", "answer": "habe gekostet"},
+  {"subject": "Ich", "present": "besiege", "infinitive": "besiegen", "answer": "habe besiegt"},
+  {"subject": "Ich", "present": "klingele", "infinitive": "klingeln", "answer": "habe geklingelt"},
+  {"subject": "Ich", "present": "wage", "infinitive": "wagen", "answer": "habe gewagt"},
+  {"subject": "Ich", "present": "untersuche", "infinitive": "untersuchen", "answer": "habe untersucht"},
+  {"subject": "Ich", "present": "finde raus", "infinitive": "rausfinden", "answer": "habe rausgefunden"},
+  {"subject": "Ich", "present": "erfülle", "infinitive": "erfüllen", "answer": "habe erfüllt"},
+  {"subject": "Ich", "present": "zwinge", "infinitive": "zwingen", "answer": "habe gezwungen"},
+  {"subject": "Ich", "present": "kehre zurück", "infinitive": "zurückkehren", "answer": "bin zurückgekehrt"},
+  {"subject": "Ich", "present": "wechsle", "infinitive": "wechseln", "answer": "habe gewechselt"},
+  {"subject": "Ich", "present": "komme her", "infinitive": "herkommen", "answer": "bin hergekommen"},
+  {"subject": "Ich", "present": "wirke", "infinitive": "wirken", "answer": "habe gewirkt"},
+  {"subject": "Ich", "present": "schnappe", "infinitive": "schnappen", "answer": "habe geschnappt"},
+  {"subject": "Ich", "present": "stehe auf", "infinitive": "aufstehen", "answer": "bin aufgestanden"},
+  {"subject": "Ich", "present": "halte an", "infinitive": "anhalten", "answer": "habe angehalten"},
+  {"subject": "Ich", "present": "streite", "infinitive": "streiten", "answer": "habe gestritten"},
+  {"subject": "Ich", "present": "atme", "infinitive": "atmen", "answer": "habe geatmet"},
+  {"subject": "Ich", "present": "erlebe", "infinitive": "erleben", "answer": "habe erlebt"},
+  {"subject": "Ich", "present": "beschließe", "infinitive": "beschließen", "answer": "habe beschlossen"},
+  {"subject": "Ich", "present": "drücke", "infinitive": "drücken", "answer": "habe gedrückt"},
+  {"subject": "Ich", "present": "genieße", "infinitive": "genießen", "answer": "habe genossen"},
+  {"subject": "Ich", "present": "beeindrucke", "infinitive": "beeindrucken", "answer": "habe beeindruckt"},
+  {"subject": "Ich", "present": "sehe ab", "infinitive": "absehen", "answer": "habe abgesehen"},
+  {"subject": "Ich", "present": "sehe zu", "infinitive": "zusehen", "answer": "habe zugesehen"},
+  {"subject": "Ich", "present": "betrüge", "infinitive": "betrügen", "answer": "habe betrogen"},
+  {"subject": "Ich", "present": "heile", "infinitive": "heilen", "answer": "habe geheilt"},
+  {"subject": "Ich", "present": "unterschreibe", "infinitive": "unterschreiben", "answer": "habe unterschrieben"},
+  {"subject": "Ich", "present": "erfinde", "infinitive": "erfinden", "answer": "habe erfunden"},
+  {"subject": "Ich", "present": "komme raus", "infinitive": "rauskommen", "answer": "bin rausgekommen"},
+  {"subject": "Ich", "present": "ficke", "infinitive": "ficken", "answer": "habe gefickt"},
+  {"subject": "Ich", "present": "warne", "infinitive": "warnen", "answer": "habe gewarnt"},
+  {"subject": "Ich", "present": "behaupte", "infinitive": "behaupten", "answer": "habe behauptet"},
+  {"subject": "Ich", "present": "falle auf", "infinitive": "auffallen", "answer": "bin aufgefallen"},
+  {"subject": "Ich", "present": "renne", "infinitive": "rennen", "answer": "bin gerannt"},
+  {"subject": "Ich", "present": "bete", "infinitive": "beten", "answer": "habe gebetet"},
+  {"subject": "Ich", "present": "treibe", "infinitive": "treiben", "answer": "habe getrieben"},
+  {"subject": "Ich", "present": "unterstütze", "infinitive": "unterstützen", "answer": "habe unterstützt"},
+  {"subject": "Ich", "present": "werde los", "infinitive": "loswerden", "answer": "bin losgeworden"},
+  {"subject": "Ich", "present": "träume", "infinitive": "träumen", "answer": "habe geträumt"},
+  {"subject": "Ich", "present": "empfange", "infinitive": "empfangen", "answer": "habe empfangen"},
+  {"subject": "Ich", "present": "sehe wieder", "infinitive": "wiedersehen", "answer": "habe wiedergesehen"},
+  {"subject": "Ich", "present": "reise", "infinitive": "reisen", "answer": "bin gereist"},
+  {"subject": "Ich", "present": "packe", "infinitive": "packen", "answer": "habe gepackt"},
+  {"subject": "Ich", "present": "erfreue", "infinitive": "erfreuen", "answer": "habe erfreut"},
+  {"subject": "Ich", "present": "bestätige", "infinitive": "bestätigen", "answer": "habe bestätigt"},
+  {"subject": "Ich", "present": "fasse an", "infinitive": "anfassen", "answer": "habe angefasst"},
+  {"subject": "Ich", "present": "greife", "infinitive": "greifen", "answer": "habe gegriffen"},
+  {"subject": "Ich", "present": "richte", "infinitive": "richten", "answer": "habe gerichtet"},
+  {"subject": "Ich", "present": "erschrecke", "infinitive": "erschrecken", "answer": "bin erschrocken"},
+  {"subject": "Ich", "present": "verteidige", "infinitive": "verteidigen", "answer": "habe verteidigt"},
+  {"subject": "Ich", "present": "probiere", "infinitive": "probieren", "answer": "habe probiert"},
+  {"subject": "Ich", "present": "ziehe an", "infinitive": "anziehen", "answer": "habe angezogen"},
+  {"subject": "Ich", "present": "verarsche", "infinitive": "verarschen", "answer": "habe verarscht"},
+  {"subject": "Ich", "present": "biete an", "infinitive": "anbieten", "answer": "habe angeboten"},
+  {"subject": "Ich", "present": "wiederhole", "infinitive": "wiederholen", "answer": "habe wiederholt"},
+  {"subject": "Ich", "present": "bringe bei", "infinitive": "beibringen", "answer": "habe beigebracht"},
+  {"subject": "Ich", "present": "schneide", "infinitive": "schneiden", "answer": "habe geschnitten"},
+  {"subject": "Ich", "present": "informiere", "infinitive": "informieren", "answer": "habe informiert"},
+  {"subject": "Ich", "present": "beantworte", "infinitive": "beantworten", "answer": "habe beantwortet"},
+  {"subject": "Ich", "present": "haue", "infinitive": "hauen", "answer": "habe gehauen"},
+  {"subject": "Ich", "present": "erschaffe", "infinitive": "erschaffen", "answer": "habe erschaffen"},
+  {"subject": "Ich", "present": "bewahre", "infinitive": "bewahren", "answer": "habe bewahrt"},
+  {"subject": "Ich", "present": "schulde", "infinitive": "schulden", "answer": "habe geschuldet"},
+  {"subject": "Ich", "present": "schenke", "infinitive": "schenken", "answer": "habe geschenkt"},
+  {"subject": "Ich", "present": "überlasse", "infinitive": "überlassen", "answer": "habe überlassen"},
+  {"subject": "Ich", "present": "besitze", "infinitive": "besitzen", "answer": "habe besessen"},
+  {"subject": "Ich", "present": "mache durch", "infinitive": "durchmachen", "answer": "habe durchgemacht"},
+  {"subject": "Ich", "present": "wachse", "infinitive": "wachsen", "answer": "bin gewachsen"},
+  {"subject": "Ich", "present": "verzeihe", "infinitive": "verzeihen", "answer": "habe verziehen"},
+  {"subject": "Ich", "present": "versage", "infinitive": "versagen", "answer": "habe versagt"},
+  {"subject": "Ich", "present": "lege rein", "infinitive": "reinlegen", "answer": "habe reingelegt"},
+  {"subject": "Ich", "present": "spaziere", "infinitive": "spazieren", "answer": "bin spaziert"},
+  {"subject": "Ich", "present": "bestrafe", "infinitive": "bestrafen", "answer": "habe bestraft"},
+  {"subject": "Ich", "present": "ruhe aus", "infinitive": "ausruhen", "answer": "habe ausgeruht"},
+  {"subject": "Ich", "present": "begeistere", "infinitive": "begeistern", "answer": "habe begeistert"},
+  {"subject": "Ich", "present": "sperre ein", "infinitive": "einsperren", "answer": "habe eingesperrt"},
+  {"subject": "Ich", "present": "stinke", "infinitive": "stinken", "answer": "habe gestunken"},
+  {"subject": "Ich", "present": "regele", "infinitive": "regeln", "answer": "habe geregelt"},
+  {"subject": "Ich", "present": "lüge an", "infinitive": "anlügen", "answer": "habe angelogen"},
+  {"subject": "Ich", "present": "kläre", "infinitive": "klären", "answer": "habe geklärt"},
+  {"subject": "Ich", "present": "bescheiße", "infinitive": "bescheißen", "answer": "habe beschissen"},
+  {"subject": "Ich", "present": "berühre", "infinitive": "berühren", "answer": "habe berührt"},
+  {"subject": "Ich", "present": "scheiße", "infinitive": "scheißen", "answer": "habe geschissen"},
+  {"subject": "Ich", "present": "verwandle", "infinitive": "verwandeln", "answer": "habe verwandelt"},
+  {"subject": "Ich", "present": "verschwende", "infinitive": "verschwenden", "answer": "habe verschwendet"},
+  {"subject": "Ich", "present": "rieche", "infinitive": "riechen", "answer": "habe gerochen"},
+  {"subject": "Ich", "present": "reagiere", "infinitive": "reagieren", "answer": "habe reagiert"},
+  {"subject": "Ich", "present": "bekämpfe", "infinitive": "bekämpfen", "answer": "habe bekämpft"},
+  {"subject": "Ich", "present": "äußere", "infinitive": "äußern", "answer": "habe geäußert"},
+  {"subject": "Ich", "present": "wasche", "infinitive": "waschen", "answer": "habe gewaschen"},
+  {"subject": "Ich", "present": "übersetze", "infinitive": "übersetzen", "answer": "habe übersetzt"},
+  {"subject": "Ich", "present": "hole raus", "infinitive": "rausholen", "answer": "habe rausgeholt"},
+  {"subject": "Ich", "present": "mache mit", "infinitive": "mitmachen", "answer": "habe mitgemacht"},
+  {"subject": "Ich", "present": "verwende", "infinitive": "verwenden", "answer": "habe verwendet"},
+  {"subject": "Ich", "present": "erscheine", "infinitive": "erscheinen", "answer": "bin erschienen"},
+  {"subject": "Ich", "present": "stelle an", "infinitive": "anstellen", "answer": "habe angestellt"},
+  {"subject": "Ich", "present": "räche", "infinitive": "rächen", "answer": "habe gerächt"},
+  {"subject": "Ich", "present": "gebe zu", "infinitive": "zugeben", "answer": "habe zugegeben"},
+  {"subject": "Ich", "present": "gehe rein", "infinitive": "reingehen", "answer": "bin reingegangen"},
+  {"subject": "Ich", "present": "verfluche", "infinitive": "verfluchen", "answer": "habe verflucht"},
+  {"subject": "Ich", "present": "übe", "infinitive": "üben", "answer": "habe geübt"},
+  {"subject": "Ich", "present": "ziehe aus", "infinitive": "ausziehen", "answer": "habe ausgezogen"},
+  {"subject": "Ich", "present": "aktiviere", "infinitive": "aktivieren", "answer": "habe aktiviert"},
+  {"subject": "Ich", "present": "schieße an", "infinitive": "anschießen", "answer": "habe angeschossen"},
+  {"subject": "Ich", "present": "achte", "infinitive": "achten", "answer": "habe geachtet"},
+  {"subject": "Ich", "present": "vermute", "infinitive": "vermuten", "answer": "habe vermutet"},
+  {"subject": "Ich", "present": "stelle ein", "infinitive": "einstellen", "answer": "habe eingestellt"},
+  {"subject": "Ich", "present": "versaue", "infinitive": "versauen", "answer": "habe versaut"},
+  {"subject": "Ich", "present": "flehe", "infinitive": "flehen", "answer": "habe gefleht"},
+  {"subject": "Ich", "present": "lerne kennen", "infinitive": "kennenlernen", "answer": "habe kennengelernt"},
+  {"subject": "Ich", "present": "identifiziere", "infinitive": "identifizieren", "answer": "habe identifiziert"},
+  {"subject": "Ich", "present": "fresse", "infinitive": "fressen", "answer": "habe gefressen"},
+  {"subject": "Ich", "present": "mache auf", "infinitive": "aufmachen", "answer": "habe aufgemacht"},
+  {"subject": "Ich", "present": "verabschiede", "infinitive": "verabschieden", "answer": "habe verabschiedet"},
+  {"subject": "Ich", "present": "tauche auf", "infinitive": "auftauchen", "answer": "bin aufgetaucht"},
+  {"subject": "Ich", "present": "linke", "infinitive": "linken", "answer": "habe gelinkt"},
+  {"subject": "Ich", "present": "überfalle", "infinitive": "überfallen", "answer": "habe überfallen"},
+  {"subject": "Ich", "present": "falle ein", "infinitive": "einfallen", "answer": "bin eingefallen"},
+  {"subject": "Ich", "present": "entschließe", "infinitive": "entschließen", "answer": "habe entschlossen"},
+  {"subject": "Ich", "present": "liefere", "infinitive": "liefern", "answer": "habe geliefert"},
+  {"subject": "Ich", "present": "begehe", "infinitive": "begehen", "answer": "habe begangen"},
+  {"subject": "Ich", "present": "leite", "infinitive": "leiten", "answer": "habe geleitet"},
+  {"subject": "Ich", "present": "sehe nach", "infinitive": "nachsehen", "answer": "habe nachgesehen"},
+  {"subject": "Ich", "present": "suche aus", "infinitive": "aussuchen", "answer": "habe ausgesucht"},
+  {"subject": "Ich", "present": "sammle", "infinitive": "sammeln", "answer": "habe gesammelt"},
+  {"subject": "Ich", "present": "schaue an", "infinitive": "anschauen", "answer": "habe angeschaut"},
+  {"subject": "Ich", "present": "reite", "infinitive": "reiten", "answer": "bin geritten"},
+  {"subject": "Ich", "present": "lächle", "infinitive": "lächeln", "answer": "habe gelächelt"},
+  {"subject": "Ich", "present": "bereue", "infinitive": "bereuen", "answer": "habe bereut"},
+  {"subject": "Ich", "present": "berichte", "infinitive": "berichten", "answer": "habe berichtet"},
+  {"subject": "Ich", "present": "präsentiere", "infinitive": "präsentieren", "answer": "habe präsentiert"},
+  {"subject": "Ich", "present": "verberge", "infinitive": "verbergen", "answer": "habe verborgen"},
+  {"subject": "Ich", "present": "spare", "infinitive": "sparen", "answer": "habe gespart"},
+  {"subject": "Ich", "present": "verurteile", "infinitive": "verurteilen", "answer": "habe verurteilt"},
+  {"subject": "Ich", "present": "gehe weiter", "infinitive": "weitergehen", "answer": "bin weitergegangen"},
+  {"subject": "Ich", "present": "vermassle", "infinitive": "vermasseln", "answer": "habe vermasselt"},
+  {"subject": "Ich", "present": "schweige", "infinitive": "schweigen", "answer": "habe geschwiegen"},
+  {"subject": "Ich", "present": "wende", "infinitive": "wenden", "answer": "habe gewendet"},
+  {"subject": "Ich", "present": "explodiere", "infinitive": "explodieren", "answer": "bin explodiert"},
+  {"subject": "Ich", "present": "versetze", "infinitive": "versetzen", "answer": "habe versetzt"},
+  {"subject": "Ich", "present": "verbrenne", "infinitive": "verbrennen", "answer": "habe verbrannt"},
+  {"subject": "Ich", "present": "wache auf", "infinitive": "aufwachen", "answer": "bin aufgewacht"},
+  {"subject": "Ich", "present": "setze ein", "infinitive": "einsetzen", "answer": "habe eingesetzt"},
+  {"subject": "Ich", "present": "gehe zurück", "infinitive": "zurückgehen", "answer": "bin zurückgegangen"},
+  {"subject": "Ich", "present": "vermeide", "infinitive": "vermeiden", "answer": "habe vermieden"},
+  {"subject": "Ich", "present": "streiche", "infinitive": "streichen", "answer": "habe gestrichen"},
+  {"subject": "Ich", "present": "befreunde", "infinitive": "befreunden", "answer": "habe befreundet"},
+  {"subject": "Ich", "present": "steige aus", "infinitive": "aussteigen", "answer": "bin ausgestiegen"},
+  {"subject": "Ich", "present": "entspanne", "infinitive": "entspannen", "answer": "habe entspannt"},
+  {"subject": "Ich", "present": "gebe ab", "infinitive": "abgeben", "answer": "habe abgegeben"},
+  {"subject": "Ich", "present": "beleidige", "infinitive": "beleidigen", "answer": "habe beleidigt"},
+  {"subject": "Ich", "present": "gehe ein", "infinitive": "eingehen", "answer": "bin eingegangen"},
+  {"subject": "Ich", "present": "bringe zurück", "infinitive": "zurückbringen", "answer": "habe zurückgebracht"},
+  {"subject": "Ich", "present": "beteilige", "infinitive": "beteiligen", "answer": "habe beteiligt"},
+  {"subject": "Ich", "present": "verabrede", "infinitive": "verabreden", "answer": "habe verabredet"},
+  {"subject": "Ich", "present": "bilde", "infinitive": "bilden", "answer": "habe gebildet"},
+  {"subject": "Ich", "present": "nehme ab", "infinitive": "abnehmen", "answer": "habe abgenommen"},
+  {"subject": "Ich", "present": "verprügle", "infinitive": "verprügeln", "answer": "habe verprügelt"},
+  {"subject": "Ich", "present": "verhandle", "infinitive": "verhandeln", "answer": "habe verhandelt"},
+  {"subject": "Ich", "present": "leihe", "infinitive": "leihen", "answer": "habe geliehen"},
+  {"subject": "Ich", "present": "verhalte", "infinitive": "verhalten", "answer": "habe verhalten"},
+  {"subject": "Ich", "present": "telefoniere", "infinitive": "telefonieren", "answer": "habe telefoniert"},
+  {"subject": "Ich", "present": "tausche", "infinitive": "tauschen", "answer": "habe getauscht"},
+  {"subject": "Ich", "present": "laufe weg", "infinitive": "weglaufen", "answer": "bin weggelaufen"},
+  {"subject": "Ich", "present": "sende", "infinitive": "senden", "answer": "habe gesendet"},
+  {"subject": "Ich", "present": "gehe weg", "infinitive": "weggehen", "answer": "bin weggegangen"},
+  {"subject": "Ich", "present": "übertreibe", "infinitive": "übertreiben", "answer": "habe übertrieben"},
+  {"subject": "Ich", "present": "stöhne", "infinitive": "stöhnen", "answer": "habe gestöhnt"},
+  {"subject": "Ich", "present": "stürze", "infinitive": "stürzen", "answer": "bin gestürzt"},
+  {"subject": "Ich", "present": "trainiere", "infinitive": "trainieren", "answer": "habe trainiert"},
+  {"subject": "Ich", "present": "studiere", "infinitive": "studieren", "answer": "habe studiert"},
+  {"subject": "Ich", "present": "benehme", "infinitive": "benehmen", "answer": "habe benommen"},
+  {"subject": "Ich", "present": "male", "infinitive": "malen", "answer": "habe gemalt"},
+  {"subject": "Ich", "present": "vergifte", "infinitive": "vergiften", "answer": "habe vergiftet"},
+  {"subject": "Ich", "present": "gewöhne", "infinitive": "gewöhnen", "answer": "habe gewöhnt"},
+  {"subject": "Ich", "present": "prüfe", "infinitive": "prüfen", "answer": "habe geprüft"},
+  {"subject": "Ich", "present": "halte fest", "infinitive": "festhalten", "answer": "habe festgehalten"},
+  {"subject": "Ich", "present": "bedrohe", "infinitive": "bedrohen", "answer": "habe bedroht"},
+  {"subject": "Ich", "present": "bedanke", "infinitive": "bedanken", "answer": "habe bedankt"},
+  {"subject": "Ich", "present": "nerve", "infinitive": "nerven", "answer": "habe genervt"},
+  {"subject": "Ich", "present": "bereite", "infinitive": "bereiten", "answer": "habe bereitet"},
+  {"subject": "Ich", "present": "opfere", "infinitive": "opfern", "answer": "habe geopfert"},
+  {"subject": "Ich", "present": "leere", "infinitive": "leeren", "answer": "habe geleert"},
+  {"subject": "Ich", "present": "schlafe ein", "infinitive": "einschlafen", "answer": "bin eingeschlafen"},
+  {"subject": "Ich", "present": "verlaufe", "infinitive": "verlaufen", "answer": "bin verlaufen"},
+  {"subject": "Ich", "present": "herrsche", "infinitive": "herrschen", "answer": "habe geherrscht"},
+  {"subject": "Ich", "present": "höre an", "infinitive": "anhören", "answer": "habe angehört"},
+  {"subject": "Ich", "present": "wecke", "infinitive": "wecken", "answer": "habe geweckt"},
+  {"subject": "Ich", "present": "setze aus", "infinitive": "aussetzen", "answer": "habe ausgesetzt"},
+  {"subject": "Ich", "present": "garantiere", "infinitive": "garantieren", "answer": "habe garantiert"}
+];
+
+        // --- State Variables ---
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let mistakes = [];
+        let totalQuestions = 0;
+        let quizActive = false;
+
+        // --- DOM Elements ---
+        const startScreenDiv = document.getElementById('start-screen');
+        const quizAreaDiv = document.getElementById('quiz-area');
+        const resultsAreaDiv = document.getElementById('results-area');
+        const promptP = document.getElementById('prompt');
+        const hintP = document.getElementById('hint');
+        const userAnswerInput = document.getElementById('user-answer');
+        const feedbackP = document.getElementById('feedback');
+        const questionCounterP = document.getElementById('question-counter');
+        const finalScoreP = document.getElementById('final-score');
+        const percentageP = document.getElementById('percentage');
+        const mistakesListUl = document.getElementById('mistakes-list');
+        const mistakesContainerDiv = document.getElementById('mistakes-container');
+        const noMistakesP = document.getElementById('no-mistakes');
+        const submitButton = document.getElementById('submit-answer');
+
+        // --- Helper Functions ---
+
+        // Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Display element helper
+        function displayElement(element, show) {
+            element.style.display = show ? 'block' : 'none';
+        }
+
+        // Normalize answer (case/umlaut/eszett insensitive) - REINSTATED from original
+        function normalizeString(str) {
+             // Also replace multiple spaces with single space
+            return str.toLowerCase()
+                      .replace(/ä/g, 'a')
+                      .replace(/ö/g, 'o')
+                      .replace(/ü/g, 'u')
+                      .replace(/ß/g, 'ss')
+                      .trim()
+                      .replace(/\s+/g, ' ');
+        }
+
+        // --- Core Functions ---
+
+        function startQuiz() {
+            currentQuestions = [...quizQuestions]; // Copy questions
+            shuffleArray(currentQuestions);
+            currentQuestions = currentQuestions.slice(0, 50);
+            totalQuestions = currentQuestions.length;
+
+            // Reset state
+            currentQuestionIndex = 0;
+            score = 0;
+            mistakes = [];
+            quizActive = true;
+
+            // Update UI
+            displayElement(startScreenDiv, false);
+            displayElement(resultsAreaDiv, false);
+            displayElement(quizAreaDiv, true);
+            feedbackP.textContent = '';
+            feedbackP.className = '';
+
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+             if (!quizActive) return;
+
+            if (currentQuestionIndex >= totalQuestions) {
+                showResults();
+                return;
+            }
+
+            const currentQ = currentQuestions[currentQuestionIndex];
+
+            // Display the prompt: Subject + Present Verb (Infinitive) -> Subject + Blank?
+            const promptHTML = `
+                <span class="present-verb">${currentQ.subject} ${currentQ.present}</span>
+                <span class="base-verb">(${currentQ.infinitive})</span>
+                 &rarr;
+                 ${currentQ.subject} <span class="blank">_______</span>?
+            `;
+            promptP.innerHTML = promptHTML;
+            // hintP.textContent = `English hint if needed`; // Optional hint
+
+             // Store normalized correct answer for comparison
+             userAnswerInput.dataset.correctAnswer = normalizeString(currentQ.answer);
+             // Store original prompt info for results display
+             userAnswerInput.dataset.originalSubject = currentQ.subject;
+             userAnswerInput.dataset.originalPresent = currentQ.present;
+             userAnswerInput.dataset.originalInfinitive = currentQ.infinitive;
+             userAnswerInput.dataset.originalAnswer = currentQ.answer;
+
+
+            questionCounterP.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+            userAnswerInput.value = '';
+            feedbackP.textContent = '';
+            feedbackP.className = '';
+            userAnswerInput.disabled = false;
+            submitButton.disabled = false;
+            userAnswerInput.focus();
+        }
+
+        function checkAnswer() {
+            if (!quizActive) return;
+
+            const userAnswerRaw = userAnswerInput.value.trim();
+            // Use the normalizeString function for comparison
+            const userAnswerNormalized = normalizeString(userAnswerRaw);
+            const correctAnswerNormalized = userAnswerInput.dataset.correctAnswer;
+
+            const originalSubject = userAnswerInput.dataset.originalSubject;
+            const originalPresent = userAnswerInput.dataset.originalPresent;
+            const originalInfinitive = userAnswerInput.dataset.originalInfinitive;
+            const originalAnswer = userAnswerInput.dataset.originalAnswer;
+
+
+            userAnswerInput.disabled = true;
+            submitButton.disabled = true;
+
+            if (userAnswerNormalized === correctAnswerNormalized) {
+                score++;
+                feedbackP.textContent = 'Richtig!';
+                feedbackP.className = 'correct';
+            } else {
+                feedbackP.innerHTML = `Falsch. Die richtige Antwort ist: <span class="correct-ans-inline">${originalAnswer}</span>`;
+                feedbackP.className = 'incorrect';
+                mistakes.push({
+                    subject: originalSubject,
+                    present: originalPresent,
+                    infinitive: originalInfinitive,
+                    user_answer: userAnswerRaw || "[Keine Antwort]",
+                    correct_answer: originalAnswer
+                });
+            }
+
+            currentQuestionIndex++;
+            setTimeout(() => {
+                 if (quizActive) {
+                     displayQuestion();
+                 }
+            }, userAnswerNormalized === correctAnswerNormalized ? 800 : 2000); // Shorter delay for correct
+        }
+
+        function showResults() {
+             quizActive = false;
+            const percentage = totalQuestions > 0 ? ((score / totalQuestions) * 100).toFixed(1) : 0;
+
+            finalScoreP.textContent = `Dein Ergebnis: ${score} von ${totalQuestions} richtig`;
+            percentageP.textContent = `Das sind ${percentage}%.`;
+
+            mistakesListUl.innerHTML = '';
+            if (mistakes.length === 0) {
+                displayElement(mistakesContainerDiv, false);
+                displayElement(noMistakesP, true);
+            } else {
+                displayElement(mistakesContainerDiv, true);
+                displayElement(noMistakesP, false);
+                mistakes.forEach(m => {
+                    const li = document.createElement('li');
+                     // Display the original prompt structure, user answer, and correct answer
+                     // Recreate prompt HTML for consistency
+                     const promptTextHTML = `
+                        <span class="present-verb">${m.subject} ${m.present}</span>
+                        <span class="base-verb">(${m.infinitive})</span>
+                         &rarr;
+                         ${m.subject} _____?`;
+                     li.innerHTML = `
+                        <span class="prompt-text">Frage: ${promptTextHTML}</span>
+                        Deine Antwort: <span class="user-ans">${m.user_answer}</span><br>
+                        Richtige Antwort: <span class="correct-ans">${m.correct_answer}</span>
+                    `;
+                    mistakesListUl.appendChild(li);
+                });
+            }
+
+            displayElement(quizAreaDiv, false);
+            displayElement(resultsAreaDiv, true);
+        }
+
+         function resetQuiz() {
+             quizActive = false;
+             // Reset state variables
+             currentQuestions = [];
+             currentQuestionIndex = 0;
+             score = 0;
+             mistakes = [];
+             totalQuestions = 0;
+
+             // Reset UI elements
+             userAnswerInput.value = '';
+             feedbackP.textContent = '';
+             feedbackP.className = '';
+             questionCounterP.textContent = '';
+             promptP.innerHTML = '';
+             hintP.textContent = '';
+             userAnswerInput.disabled = false;
+             submitButton.disabled = false;
+
+             // Go back to start screen
+             displayElement(quizAreaDiv, false);
+             displayElement(resultsAreaDiv, false);
+             displayElement(startScreenDiv, true);
+         }
+
+        // Event Listener for Enter Key
+        userAnswerInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && quizActive && !userAnswerInput.disabled) {
+                event.preventDefault(); // Prevent form submission if inside a form
+                checkAnswer();
+            }
+        });
+
+    </script>
+</body>
+</html>
